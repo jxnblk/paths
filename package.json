@@ -1,0 +1,27 @@
+{
+  "name": "paths",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prod": "webpack -p --progress --colors",
+    "start": "webpack-dev-server --progress --colors"
+  },
+  "author": "Brent Jackson",
+  "license": "MIT",
+  "dependencies": {
+    "babel-loader": "^5.3.1",
+    "color": "^0.10.1",
+    "colors.css": "^2.3.0",
+    "css-loader": "^0.15.2",
+    "cssnext-loader": "^1.0.1",
+    "json-loader": "^0.5.2",
+    "node-libs-browser": "^0.5.2",
+    "path-ast": "^1.0.0",
+    "postcss-basscss": "^0.2.2",
+    "react": "^0.13.3",
+    "rgx": "^0.2.0",
+    "simple-modular-scale": "^1.0.2",
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
+  }
+}
