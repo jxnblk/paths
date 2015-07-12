@@ -2,6 +2,7 @@
 import React from 'react'
 import commands from 'path-ast/lib/keys'
 import commandNames from '../util/command-names'
+import previousKey from '../util/get-previous-key'
 import Select from './Select.jsx'
 import Input from './Input.jsx'
 import Button from './Button.jsx'
@@ -23,10 +24,38 @@ class Command extends React.Component {
     let index = this.props.index
     let value = e.target.value
     let command = ast.commands[index]
+    let prevX = previousKey(ast.commands, index, 'x')
+    let prevY = previousKey(ast.commands, index, 'y')
     command.type = value
+    let params = {}
     commands[value].forEach(function (key) {
-      command.params[key] = command.params[key] || 0
+      // Move this into a utility
+      // Get prev x and y if all else fails
+      if (typeof command.params[key] === 'undefined') {
+        if (key.match(/^x/)) {
+          if (typeof command.params.x !== 'undefined') {
+            let x = parseFloat(command.params.x)
+            let diff = x > prevX ?  (x - prevX) * 2/3 + prevX: (prevX - x) * 2/3 + x
+            params[key] = diff
+          } else {
+            params[key] = prevX
+          }
+        } else if (key.match(/^y/)) {
+          if (typeof command.params.y !== 'undefined') {
+            let y = parseFloat(command.params.y)
+            let diff = y > prevY ?  (y - prevY) * 2/3 + prevY: (prevY - y) * 2/3 + y
+            params[key] = diff
+          } else {
+            params[key] = prevY
+          }
+        } else {
+          params[key] = 0
+        }
+      } else {
+        params[key] = command.params[key]
+      }
     })
+    command.params = params
     this.props.updateAst(ast)
   }
 

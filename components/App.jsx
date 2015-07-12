@@ -21,6 +21,8 @@ class App extends React.Component {
       resolution: [16, 2],
       resolution1: 16,
       resolution2: 2,
+      // Replace resolutions with
+      res: 2,
       snap: true,
       preview: false,
       mode: 'select'

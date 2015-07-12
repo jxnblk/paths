@@ -27,6 +27,7 @@ class Commands extends React.Component {
       }
     }
     ast.commands.splice(ast.commands.length - 1, 0, newPoint)
+    this.props.selectPoint(ast.commands.length - 2)
     this.props.updateAst(ast)
   }
 

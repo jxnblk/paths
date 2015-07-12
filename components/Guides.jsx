@@ -25,18 +25,44 @@ class Guides extends React.Component {
       }
     }
 
-    let currentC = {
-      commands: [
-        {
-          type: 'M',
-          params: {
-            x: getPrevKey(ast.commands, current, 'x'),
-            y: getPrevKey(ast.commands, current, 'y'),
-          }
-        },
-        ast.commands[current]
-      ]
+    let start = {
+      type: 'M',
+      params: {
+        x: getPrevKey(ast.commands, current, 'x'),
+        y: getPrevKey(ast.commands, current, 'y'),
+      }
     }
+
+    let currentC
+    if (current > 1) {
+      currentC = {
+        commands: [
+          {
+            type: 'M',
+            params: {
+              x: getPrevKey(ast.commands, current - 1, 'x'),
+              y: getPrevKey(ast.commands, current - 1, 'y'),
+            }
+          },
+          ast.commands[current - 1],
+          ast.commands[current]
+        ]
+      }
+    } else {
+      currentC = {
+        commands: [
+          {
+            type: 'M',
+            params: {
+              x: getPrevKey(ast.commands, current, 'x'),
+              y: getPrevKey(ast.commands, current, 'y'),
+            }
+          },
+          ast.commands[current]
+        ]
+      }
+    }
+
     let currentD = pathast.stringify(currentC)
 
     return (

@@ -2,6 +2,9 @@
 import React from 'react'
 import previousKey from '../util/get-previous-key'
 import { colors } from '../data'
+import Anchor from './Anchor.jsx'
+import CurrentAnchor from './CurrentAnchor.jsx'
+import CurveHandles from './CurveHandles.jsx'
 
 class Handles extends React.Component {
 
@@ -13,23 +16,29 @@ class Handles extends React.Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
     this.handleAddPoint = this.handleAddPoint.bind(this)
     this.state = {
-      isMoving: false
+      isMoving: false,
+      params: false
     }
   }
 
-  handleMouseDown (i, e) {
-    if (typeof i === 'number') {
-      this.props.selectPoint(i)
+  handleMouseDown (params, e) {
+    if (typeof params === 'number') {
+      this.props.selectPoint(params)
+      params = ['x', 'y']
+    } else if (Array.isArray(params)){
     }
-    this.setState({ isMoving: true })
+    this.setState({
+      isMoving: true,
+      params: params
+    })
   }
 
   handleMouseUp (e) {
-    this.setState({ isMoving: false })
+    this.setState({ isMoving: false, params: false })
   }
 
   handleMouseLeave (e) {
-    this.setState({ isMoving: false })
+    this.setState({ isMoving: false, params: false })
   }
 
   handleMouseMove (e) {
@@ -37,27 +46,35 @@ class Handles extends React.Component {
       let props = this.props
       let { ast, zoom, padding } = props
       let i = props.current
-      let com = ast.commands[i]
+      let params = ast.commands[i].params
+      let px = this.state.params[0]
+      let py = this.state.params[1]
       let res = props.resolution2
       let ev = e.nativeEvent
       let x = ev.offsetX / zoom - padding
       let y = ev.offsetY / zoom - padding
-      if (this.props.snap) {
+      if (props.snap) {
         x = Math.floor(x / res) * res || 0
         y = Math.floor(y / res) * res || 0
       }
       if (x < 0) {
         x = 0
-      } else if (x > this.props.width) {
-        x = this.props.width
+      } else if (x > props.width) {
+        x = props.width
       }
       if (y < 0) {
         y = 0
-      } else if (y > this.props.height) {
-        y = this.props.height
+      } else if (y > props.height) {
+        y = props.height
       }
-      com.params.x = typeof com.params.x !== 'undefined' ? x : null
-      com.params.y = typeof com.params.y !== 'undefined' ? y : null
+      if (typeof params[px] !== 'undefined') {
+        params[px] = x
+      }
+      if (typeof params[py] !== 'undefined') {
+        params[py] = y
+      }
+      //com.params.x = typeof com.params.x !== 'undefined' ? x : undefined
+      //com.params.y = typeof com.params.y !== 'undefined' ? y : undefined
       this.props.updateAst(ast)
     }
   }
@@ -87,33 +104,28 @@ class Handles extends React.Component {
   render () {
     let self = this
     let props = this.props
+    let state = this.state
     let { ast, current, zoom } = props
-    let r1 = 8 / zoom
-    let r2 = 12 / zoom
+    let q3 = 32 / zoom
 
-    let points = ast.commands
+    let anchors = ast.commands
       .filter(function(command) {
         return Object.keys(command.params).length
       })
       .map(function(command, i) {
         let params = command.params
         return {
-          cx: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, i, 'x'),
-          cy: typeof params.y !== 'undefined' ? params.y : previousKey(ast.commands, i, 'y'),
-          r: r1
+          x: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, i, 'x'),
+          y: typeof params.y !== 'undefined' ? params.y : previousKey(ast.commands, i, 'y')
         }
       })
 
+    // rename com
     let curr = ast.commands[current].params
 
-    let c = {
-      cx: typeof curr.x !== 'undefined' ? curr.x : previousKey(ast.commands, current, 'x'),
-      cy: typeof curr.y !== 'undefined' ? curr.y :  previousKey(ast.commands, current, 'y'),
-      r: r2
-    }
-
-    function selectPoint (i, e) {
-      props.selectPoint(i)
+    let currentAnchor = {
+      x: typeof curr.x !== 'undefined' ? curr.x : previousKey(ast.commands, current, 'x'),
+      y: typeof curr.y !== 'undefined' ? curr.y :  previousKey(ast.commands, current, 'y')
     }
 
     let styles = {
@@ -126,31 +138,17 @@ class Handles extends React.Component {
         stroke: 'none',
         fill: 'transparent',
       },
-      point: {
-        fill: 'transparent',
-        stroke: 'none',
-        cursor: 'pointer'
-      },
-      pointRing: {
-        opacity: .5,
-        vectorEffect: 'non-scaling-stroke',
-      },
-      current: {
+      curvePoint: {
         fill: colors.blue,
         stroke: 'none',
-        opacity: .25,
-        cursor: 'pointer',
-        vectorEffect: 'non-scaling-stroke',
-      },
-      currentRing: {
-        stroke: colors.blue,
-        vectorEffect: 'non-scaling-stroke',
+        cursor: 'pointer'
       }
     }
 
     return (
       <g style={styles.g}
         onMouseLeave={this.handleMouseLeave}>
+
         <rect
           transform={'translate(' + -props.padding + ' ' + -props.padding + ')'}
           width={props.width + props.padding * 2}
@@ -159,40 +157,35 @@ class Handles extends React.Component {
           onMouseDown={this.handleAddPoint}
           onMouseUp={this.handleMouseUp}
           onMouseMove={this.handleMouseMove} />
-        {points.map(function(p, i) {
+
+        {anchors.map(function(anchor, i) {
           return (
-            <g key={i}>
-              <circle
-                cx={p.cx}
-                cy={p.cy}
-                r={r2 * 2}
-                tabIndex='1'
-                onFocus={selectPoint.bind(self, i)}
-                onMouseDown={self.handleMouseDown.bind(self, i)}
-                onMouseMove={self.handleMouseMove}
-                style={styles.point} />
-              <circle
-                cx={p.cx}
-                cy={p.cy}
-                r={current === i ? r2 : p.r}
-                style={styles.pointRing} />
-            </g>
+            <Anchor
+              key={i}
+              {...props}
+              index={i}
+              x={anchor.x}
+              y={anchor.y}
+              onMouseDown={self.handleMouseDown}
+              onMouseUp={self.handleMouseUp}
+              onMouseMove={self.handleMouseMove}
+            />
           )
         })}
-        <circle
-          cx={c.cx}
-          cy={c.cy}
-          r={this.state.isMoving ? 2 * c.r : c.r}
-          tabIndex='1'
+
+        <CurrentAnchor
+          {...props}
+          {...state}
+          {...currentAnchor}
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}
-          onMouseUp={this.handleMouseUp}
-          style={styles.current} />
-        <circle
-          cx={c.cx}
-          cy={c.cy}
-          r={c.r}
-          style={styles.currentRing} />
+          onMouseUp={this.handleMouseUp} />
+
+        <CurveHandles
+          {...props}
+          onMouseDown={this.handleMouseDown}
+          onMouseMove={this.handleMouseMove}
+          onMouseUp={this.handleMouseUp} />
       </g>
     )
 
