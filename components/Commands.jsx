@@ -1,6 +1,7 @@
 
 import React from 'react'
 import commands from 'path-ast/lib/keys'
+import findCenter from '../util/find-center'
 import Command from './Command.jsx'
 import Button from './Button.jsx'
 import { scale } from '../data'
@@ -16,15 +17,12 @@ class Commands extends React.Component {
   }
 
   addPoint () {
-    let ast = this.props.ast
-    let cx = this.props.width / 2
-    let cy = this.props.height / 2
+    let { ast, width, height } = this.props
+    let a = ast.commands[ast.commands.length - 2].params || { x: width / 2, y: height / 2 }
+    let b = ast.commands[0].params || { x: width / 2, y: height / 2 }
     let newPoint = {
       type: 'L',
-      params: {
-        x: cx,
-        y: cy,
-      }
+      params: findCenter(a, b)
     }
     ast.commands.splice(ast.commands.length - 1, 0, newPoint)
     this.props.selectPoint(ast.commands.length - 2)

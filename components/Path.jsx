@@ -5,10 +5,10 @@ import pathast from 'path-ast'
 class Path extends React.Component {
 
   render () {
-    let { ast } = this.props
+    let { ast, preview } = this.props
 
     let styles = {
-      opacity: .75
+      opacity: preview ? 1 : .75
     }
 
     return (

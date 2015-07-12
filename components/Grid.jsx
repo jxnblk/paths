@@ -4,7 +4,7 @@ import React from 'react'
 class Grid extends React.Component {
 
   render () {
-    let { width, height, resolution, resolution1, resolution2 } = this.props
+    let { grid, preview, width, height, resolution, resolution1, resolution2 } = this.props
 
     function getLines (x, y, step) {
       let lines = []
@@ -45,6 +45,10 @@ class Grid extends React.Component {
         vectorEffect: 'non-scaling-stroke',
         opacity: .75
       }
+    }
+
+    if (!grid || preview) {
+      return false
     }
 
     return (

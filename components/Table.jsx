@@ -10,6 +10,7 @@ class Table extends React.Component {
       outer: {
         marginLeft: props.pad ? -scale[0] : 0,
         marginRight: props.pad ? -scale[0] : 0,
+        marginBottom: props.mb ? 8 : null
       },
       inner: {
         display: 'table',

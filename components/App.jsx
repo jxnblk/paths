@@ -4,6 +4,7 @@ import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
 import Canvas from './Canvas.jsx'
 import Commands from './Commands.jsx'
+import History from './History.jsx'
 import css from '../app.css'
 
 class App extends React.Component {
@@ -30,6 +31,7 @@ class App extends React.Component {
     this.updateAst = this.updateAst.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.selectPoint = this.selectPoint.bind(this)
+    this.updateState = this.updateState.bind(this)
     this.toggle = this.toggle.bind(this)
   }
 
@@ -53,11 +55,14 @@ class App extends React.Component {
     this.setState({ [key]: val })
   }
 
+  updateState(key, val) {
+    this.setState({ [key]: val })
+  }
+
   render () {
     let state = this.state
     let props = this.props
     let style = {
-      fontFamily: 'sans-serif',
       color: 'white',
       backgroundColor: props.colors.dark
     }
@@ -72,6 +77,7 @@ class App extends React.Component {
               toggle={this.toggle}
               updateAst={this.updateAst}
               selectPoint={this.selectPoint}
+              updateState={this.updateState}
               handleChange={this.handleChange} />
           </Cell>
           <Cell min={256} max={320}>
@@ -82,6 +88,10 @@ class App extends React.Component {
               updateAst={this.updateAst} />
           </Cell>
         </Grid>
+        <History
+          {...props}
+          {...state}
+          updateAst={this.updateAst} />
       </div>
     )
   }

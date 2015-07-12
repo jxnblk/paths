@@ -28,6 +28,11 @@ export default {
       Color('#000').alpha(2/16).rgbString(),
       Color('#000').alpha(3/16).rgbString(),
       Color('#000').alpha(4/16).rgbString(),
+      Color('#000').alpha(5/16).rgbString(),
+      Color('#000').alpha(6/16).rgbString(),
+      Color('#000').alpha(7/16).rgbString(),
+      Color('#000').alpha(8/16).rgbString(),
+      Color('#000').alpha(9/16).rgbString(),
     ],
     lighten: [
       Color('#fff').alpha(1/16).rgbString(),

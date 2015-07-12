@@ -7,7 +7,7 @@ import { colors } from '../data'
 class Guides extends React.Component {
 
   render () {
-    let { ast, current } = this.props
+    let { ast, current, preview } = this.props
     let styles = {
       g: {
         fill: 'none',
@@ -34,7 +34,8 @@ class Guides extends React.Component {
     }
 
     let currentC
-    if (current > 1) {
+    // Attempt to handle smoothto curves
+    if (ast.commands[current].type.match(/(S|T)/) && current > 1) {
       currentC = {
         commands: [
           {
@@ -64,6 +65,10 @@ class Guides extends React.Component {
     }
 
     let currentD = pathast.stringify(currentC)
+
+    if (preview) {
+      return false
+    }
 
     return (
       <g style={styles.g}>

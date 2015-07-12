@@ -5,6 +5,7 @@ import commandNames from '../util/command-names'
 import previousKey from '../util/get-previous-key'
 import Select from './Select.jsx'
 import Input from './Input.jsx'
+import CompactInput from './CompactInput.jsx'
 import Button from './Button.jsx'
 import Table from './Table.jsx'
 import Pad from './Pad.jsx'
@@ -35,7 +36,7 @@ class Command extends React.Component {
         if (key.match(/^x/)) {
           if (typeof command.params.x !== 'undefined') {
             let x = parseFloat(command.params.x)
-            let diff = x > prevX ?  (x - prevX) * 2/3 + prevX: (prevX - x) * 2/3 + x
+            let diff = x > prevX ? (x - prevX) / 2 + prevX: (prevX - x) / 2 + x
             params[key] = diff
           } else {
             params[key] = prevX
@@ -43,7 +44,7 @@ class Command extends React.Component {
         } else if (key.match(/^y/)) {
           if (typeof command.params.y !== 'undefined') {
             let y = parseFloat(command.params.y)
-            let diff = y > prevY ?  (y - prevY) * 2/3 + prevY: (prevY - y) * 2/3 + y
+            let diff = y > prevY ?  (y - prevY) / 2 + prevY: (prevY - y) / 2 + y
             params[key] = diff
           } else {
             params[key] = prevY
@@ -89,6 +90,10 @@ class Command extends React.Component {
       .filter(function (key) {
         return key.match(/[A-Z]/)
       })
+      .filter(function (key) {
+        // Temporarily disable Arc
+        return key !== 'A'
+      })
       .map(function(key) {
         return {
           label: key + ': ' + commandNames[key],
@@ -118,13 +123,13 @@ class Command extends React.Component {
 
     return (
       <div style={s.div}>
-        <Table pad>
+        <Table pad mb>
           <Table.Cell fill>
             <Select
               {...props}
-              mb
               name={'command-' + props.index}
               label={'Command'}
+              hideLabel
               value={command.type}
               options={options}
               onFocus={this.handleFocus}
@@ -146,7 +151,7 @@ class Command extends React.Component {
             return (
               <div key={j}
                 style={s.cell}>
-                <Input
+                <CompactInput
                   type='number'
                   {...props}
                   mb

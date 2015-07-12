@@ -10,7 +10,7 @@ class CurveHandles extends React.Component {
     let { ast, current, zoom } = props
     let params = ast.commands[current].params
     let handles = []
-    let w = 12 / zoom
+    let w = 10 / zoom
 
     if (Object.keys(params).length > 2) {
       let { x1, y1, x2, y2 } = params
@@ -52,7 +52,8 @@ class CurveHandles extends React.Component {
       },
       line: {
         stroke: colors.blue,
-        strokeWidth: .25
+        strokeWidth: .25,
+        opacity: .5
       }
     }
 

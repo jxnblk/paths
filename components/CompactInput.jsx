@@ -2,34 +2,43 @@
 import React from 'react'
 import { scale, colors } from '../data'
 
-class Input extends React.Component {
+class CompactInput extends React.Component {
 
   render () {
     let props = this.props
     let { name, label } = props
     let s = {
       div: {
-        marginBottom: props.mb ? 12 : null
+        display: 'table',
+        width: '100%',
+        marginBottom: props.mb ? 4 : null,
+        backgroundColor: colors.darken[3],
+        borderColor: colors.lighten[3],
+        borderWidth: 1,
+        borderRadius: 2,
       },
       label: {
         fontSize: 14,
         fontWeight: 'bold',
-        display: 'block',
-        marginBottom: 4,
+        display: 'table-cell',
+        paddingLeft: 8,
+        paddingRight: 8,
+        whiteSpace: 'nowrap',
+        verticalAlign: 'middle',
       },
       input: {
         fontSize: 16,
         fontFamily: 'inherit',
+        display: 'table-cell',
         width: '100%',
         height: scale[6],
         paddingLeft: 8,
         paddingRight: 8,
         boxSizing: 'border-box',
         color: 'inherit',
-        backgroundColor: colors.darken[3],
-        borderColor: colors.lighten[3],
-        borderWidth: 1,
         boxShadow: 'none',
+        border: 'none',
+        backgroundColor: 'transparent',
         borderRadius: 2,
         WebkitAppearance: 'none',
       }
@@ -37,7 +46,9 @@ class Input extends React.Component {
     let type = props.type || 'text'
 
     return (
-      <div style={s.div}>
+      <div
+        tabIndex='1'
+        style={s.div}>
         <label
           htmlFor={name}
           style={s.label}>
@@ -53,7 +64,7 @@ class Input extends React.Component {
 
 }
 
-Input.propTypes = {
+CompactInput.propTypes = {
   label: React.PropTypes.string,
   name: React.PropTypes.string,
   type: React.PropTypes.string,
@@ -64,5 +75,5 @@ Input.propTypes = {
   mb: React.PropTypes.bool,
 }
 
-export default Input
+export default CompactInput
 

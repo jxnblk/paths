@@ -36,6 +36,7 @@ class Anchor extends React.Component {
           cx={x}
           cy={y}
           r={r}
+          onMouseUp={props.onMouseUp}
           style={styles.pointRing} />
       </g>
     )

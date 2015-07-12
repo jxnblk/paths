@@ -1,14 +1,24 @@
 
+body {
+  font-family: 'SF Compact Text', Roboto, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
 circle:focus {
   outline: none;
-  box-shadow: 0 0 4px var(--blue);
 }
 
 input:focus,
-select:focus,
+select:focus {
+  outline: none;
+  color: #111 !important;
+  background-color: var(--blue) !important;
+}
+
 button:focus,
 a:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--blue) !important;
 }
+
+
 

@@ -15,6 +15,7 @@ class Handles extends React.Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
     this.handleAddPoint = this.handleAddPoint.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.state = {
       isMoving: false,
       params: false
@@ -101,11 +102,41 @@ class Handles extends React.Component {
     props.selectPoint(current + 1)
   }
 
+  handleKeyDown (e) {
+    let props = this.props
+    let { ast, current, width, height, snap, res } = props
+    let params = ast.commands[current].params
+    console.log(e.keyCode)
+    switch (e.keyCode) {
+      case 38: // Up
+        if (params.y > 0 && params.y < height) {
+          params.y = snap ? params.y - res : params.y - 1
+        }
+        break
+      case 40: // Down
+        if (params.y > 0 && params.y < height) {
+          params.y = snap ? params.y + res : params.y + 1
+        }
+        break
+      case 37: // Left
+        if (params.x > 0 && params.x < width) {
+          params.x = snap ? params.x - res : params.x - 1
+        }
+        break
+      case 39: // Right
+        if (params.x > 0 && params.x < width) {
+          params.x = snap ? params.x + res : params.x + 1
+        }
+        break
+    }
+    props.updateAst(ast)
+  }
+
   render () {
     let self = this
     let props = this.props
     let state = this.state
-    let { ast, current, zoom } = props
+    let { ast, current, zoom, preview } = props
     let q3 = 32 / zoom
 
     let anchors = ast.commands
@@ -120,12 +151,11 @@ class Handles extends React.Component {
         }
       })
 
-    // rename com
-    let curr = ast.commands[current].params
+    let params = ast.commands[current].params
 
     let currentAnchor = {
-      x: typeof curr.x !== 'undefined' ? curr.x : previousKey(ast.commands, current, 'x'),
-      y: typeof curr.y !== 'undefined' ? curr.y :  previousKey(ast.commands, current, 'y')
+      x: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, current, 'x'),
+      y: typeof params.y !== 'undefined' ? params.y :  previousKey(ast.commands, current, 'y')
     }
 
     let styles = {
@@ -145,8 +175,13 @@ class Handles extends React.Component {
       }
     }
 
+    if (preview) {
+      return false
+    }
+
     return (
       <g style={styles.g}
+        onKeyDown={this.handleKeyDown}
         onMouseLeave={this.handleMouseLeave}>
 
         <rect

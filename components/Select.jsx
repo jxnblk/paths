@@ -18,6 +18,7 @@ class Select extends React.Component {
       },
       select: {
         fontSize: 14,
+        fontFamily: 'inherit',
         width: '100%',
         height: scale[6],
         paddingLeft: scale[1],
@@ -31,6 +32,14 @@ class Select extends React.Component {
         backgroundColor: colors.darken[3],
         //WebkitAppearance: 'none',
       }
+    }
+
+    if (props.hideLabel) {
+      s.label.position = 'absolute'
+      s.label.height = 1
+      s.label.width = 1
+      s.label.overflow = 'hidden'
+      s.label.clip = 'rect(1px, 1px, 1px, 1px)'
     }
 
     return (

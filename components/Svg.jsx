@@ -26,7 +26,7 @@ class Svg extends React.Component {
         style={styles.svg}
         fill='currentcolor'>
         <g transform={'translate(' + padding + ' ' + padding + ')'}>
-          {props.grid ? <Grid {...props} /> : false}
+          <Grid {...props} />
           <Path {...props} />
           <Guides {...props} />
           <Handles {...props} />
