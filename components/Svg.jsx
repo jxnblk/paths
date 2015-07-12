@@ -8,13 +8,12 @@ import Handles from './Handles.jsx'
 class Svg extends React.Component {
 
   render () {
-    let { width, height, zoom } = this.props
-    let padding = 8
+    let props = this.props
+    let { width, height, zoom, padding } = props
     let padX = width + padding * 2
     let padY = height + padding * 2
     let styles = {
       svg: {
-        //maxHeight: '100%',
         display: 'block',
         margin: 'auto'
       }
@@ -27,10 +26,10 @@ class Svg extends React.Component {
         style={styles.svg}
         fill='currentcolor'>
         <g transform={'translate(' + padding + ' ' + padding + ')'}>
-          <Grid {...this.props} />
-          <Path {...this.props} />
-          <Guides {...this.props} />
-          <Handles {...this.props} />
+          {props.grid ? <Grid {...props} /> : false}
+          <Path {...props} />
+          <Guides {...props} />
+          <Handles {...props} />
         </g>
       </svg>
     )

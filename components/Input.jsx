@@ -1,11 +1,12 @@
 
 import React from 'react'
+import { scale, colors } from '../data'
 
 class Input extends React.Component {
 
   render () {
     let props = this.props
-    let { name, label, colors, scale } = props
+    let { name, label } = props
     let s = {
       div: {
         marginBottom: props.mb ? 12 : null

@@ -10,7 +10,7 @@ class App extends React.Component {
   constructor () {
     super ()
     this.state = {
-      ast: pathast.parse('M8 48 H56 L32 12 z'),
+      ast: pathast.parse('M8 48 L56 48 L32 12 Z'),
       current: 1,
       width: 64,
       height: 64,
@@ -18,13 +18,15 @@ class App extends React.Component {
       zoom: 6,
       grid: true,
       resolution: [16, 2],
+      resolution1: 16,
+      resolution2: 2,
       snap: true,
       preview: false,
       mode: 'select'
     }
     this.updateAst = this.updateAst.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.selectCommand = this.selectCommand.bind(this)
+    this.selectPoint = this.selectPoint.bind(this)
     this.toggle = this.toggle.bind(this)
   }
 
@@ -34,16 +36,18 @@ class App extends React.Component {
 
   handleChange (e) {
     let key = e.target.name
-    this.setState({ key: e.target.value })
+    let val = parseFloat(e.target.value) || e.target.value
+    this.setState({ [key]: val })
   }
 
-  selectCommand (i) {
+  selectPoint (i) {
     this.setState({ current: i })
   }
 
   toggle (key) {
     let val = !this.state[key]
-    this.setState({ key: val })
+    console.log
+    this.setState({ [key]: val })
   }
 
   render () {
@@ -59,12 +63,19 @@ class App extends React.Component {
       <div style={style}>
         <Grid>
           <Cell min={320}>
-            <Canvas {...props} {...state} />
+            <Canvas
+              {...props}
+              {...state}
+              toggle={this.toggle}
+              updateAst={this.updateAst}
+              selectPoint={this.selectPoint}
+              handleChange={this.handleChange} />
           </Cell>
           <Cell min={256} max={320}>
             <Commands
               {...props}
               {...state}
+              selectPoint={this.selectPoint}
               updateAst={this.updateAst} />
           </Cell>
         </Grid>

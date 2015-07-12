@@ -14,12 +14,14 @@ export default {
     .filter(function (key) {
       return key.match(/[A-Z]/)
     }),
+  padding: 8,
   scale: scale,
   styles: {
     pad: scale
   },
   colors: {
     cyan: 'cyan',
+    blue: '#0cf',
     dark: '#222',
     darken: [
       Color('#000').alpha(1/16).rgbString(),

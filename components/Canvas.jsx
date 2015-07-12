@@ -1,7 +1,7 @@
 
 import React from 'react'
 import Svg from './Svg.jsx'
-// Toolbar
+import Toolbar from './Toolbar.jsx'
 
 class Canvas extends React.Component {
 
@@ -16,7 +16,7 @@ class Canvas extends React.Component {
         position: 'absolute',
         top: 0,
         right: 0,
-        bottom: 64,
+        bottom: 72,
         left: 0,
         overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
@@ -35,7 +35,9 @@ class Canvas extends React.Component {
         left: 0,
         right: 0,
         bottom: 0,
-        height: 64,
+        height: 72,
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
         backgroundColor: props.colors.darken[1]
       }
     }
@@ -53,7 +55,7 @@ class Canvas extends React.Component {
           </div>
         </div>
         <div style={styles.toolbar}>
-          <code>toolbar</code>
+          <Toolbar {...props} />
         </div>
       </div>
     )

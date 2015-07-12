@@ -1,6 +1,7 @@
 
 import React from 'react'
 import pathast from 'path-ast'
+import getPrevKey from '../util/get-previous-key'
 
 class Guides extends React.Component {
 
@@ -13,14 +14,25 @@ class Guides extends React.Component {
         vectorEffect: 'non-scaling-stroke'
       },
       guides: {
+        vectorEffect: 'non-scaling-stroke',
+        strokeWidth: 2,
       },
       current: {
+        vectorEffect: 'non-scaling-stroke',
+        strokeWidth: 3,
         stroke: 'cyan'
       }
     }
+
     let currentC = {
       commands: [
-        ast.commands[current - 1] || ast.commands[0],
+        {
+          type: 'M',
+          params: {
+            x: getPrevKey(ast.commands, current, 'x'),
+            y: getPrevKey(ast.commands, current, 'y'),
+          }
+        },
         ast.commands[current]
       ]
     }
