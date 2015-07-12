@@ -11,6 +11,7 @@ class Handles extends React.Component {
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
+    this.handleAddPoint = this.handleAddPoint.bind(this)
     this.state = {
       isMoving: false
     }
@@ -61,6 +62,28 @@ class Handles extends React.Component {
     }
   }
 
+  handleAddPoint (e) {
+    let props = this.props
+    let { ast, zoom, padding, current, snap } = props
+    let res = props.resolution2
+    let ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / res) * res || 0
+      y = Math.floor(y / res) * res || 0
+    }
+    ast.commands.splice(current + 1, 0, {
+      type: 'L',
+      params: {
+        x: x,
+        y: y,
+      }
+    })
+    props.updateAst(ast)
+    props.selectPoint(current + 1)
+  }
+
   render () {
     let self = this
     let props = this.props
@@ -101,7 +124,7 @@ class Handles extends React.Component {
       },
       mouseRect: {
         stroke: 'none',
-        fill: 'transparent'
+        fill: 'transparent',
       },
       point: {
         fill: 'transparent',
@@ -131,8 +154,9 @@ class Handles extends React.Component {
         <rect
           transform={'translate(' + -props.padding + ' ' + -props.padding + ')'}
           width={props.width + props.padding * 2}
-          height={props.height}
+          height={props.height + props.padding * 2}
           style={styles.mouseRect}
+          onMouseDown={this.handleAddPoint}
           onMouseUp={this.handleMouseUp}
           onMouseMove={this.handleMouseMove} />
         {points.map(function(p, i) {

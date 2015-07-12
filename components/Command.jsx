@@ -123,7 +123,7 @@ class Command extends React.Component {
                   mb
                   label={param.name}
                   name={'command-' + props.index + '-' + param.name}
-                  value={param.value}
+                  value={Math.round(param.value * 100) / 100}
                   step={props.snap ? (props.resolution2) : 1}
                   onFocus={self.handleFocus}
                   onChange={self.handleParamChange} />
