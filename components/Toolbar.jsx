@@ -1,6 +1,9 @@
 
 import React from 'react'
+import pathast from 'path-ast'
+import makeSvg from '../util/make-svg'
 import Button from './Button.jsx'
+import LinkBtn from './LinkBtn.jsx'
 import Input from './Input.jsx'
 import Table from './Table.jsx'
 import Stepper from './Stepper.jsx'
@@ -26,6 +29,10 @@ class Toolbar extends React.Component {
     function updateZoom (val) {
       props.updateState('zoom', val)
     }
+
+    let svg = makeSvg(props.ast)
+    let blob = new Blob([svg], { type: 'text/plain' })
+    let download = (window.URL || window.webkitURL).createObjectURL( blob )
 
     let s = {
       container: {
@@ -57,37 +64,13 @@ class Toolbar extends React.Component {
               Preview {props.preview ? 'On' : 'Off'}
             </Button>
           </Table.Cell>
-          {/*
           <Table.Cell>
-            <Input
-              type='number'
-              label='Grid 1'
-              name='resolution1'
-              value={props.resolution1}
-              max={64}
-              onChange={props.handleChange} />
+            <LinkBtn
+              href={download}
+              download='paths.svg'>
+              Download
+            </LinkBtn>
           </Table.Cell>
-          <Table.Cell>
-            <Input
-              type='number'
-              label='Grid 2'
-              name='resolution2'
-              value={props.resolution2}
-              max={64}
-              onChange={props.handleChange} />
-          </Table.Cell>
-          <Table.Cell>
-            <Input
-              type='number'
-              label='Zoom'
-              name='zoom'
-              step={.5}
-              min={.5}
-              max={64}
-              value={props.zoom}
-              onChange={props.handleChange} />
-          </Table.Cell>
-          */}
           <Table.Cell fill />
           <Table.Cell>
             <div>Zoom {props.zoom}x</div>
