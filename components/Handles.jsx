@@ -106,7 +106,6 @@ class Handles extends React.Component {
     let props = this.props
     let { ast, current, width, height, snap, res } = props
     let params = ast.commands[current].params
-    console.log(e.keyCode)
     switch (e.keyCode) {
       case 38: // Up
         if (params.y > 0 && params.y < height) {
