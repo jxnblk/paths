@@ -1,10 +1,11 @@
 
 import React from 'react'
+import { CarbonAd } from 'blk'
 import commands from 'path-ast/lib/keys'
 import findCenter from '../util/find-center'
 import Command from './Command.jsx'
 import Button from './Button.jsx'
-import { scale } from '../data'
+import { colors, scale } from '../data'
 
 // Commands Palette
 //  - Stepper
@@ -48,41 +49,59 @@ class Commands extends React.Component {
 
     let s = {
       container: {
+        position: 'relative',
         boxSizing: 'border-box',
         height: '100vh',
+        paddingBottom: 128,
+        backgroundColor: colors.darken[2]
+      },
+      inner: {
         overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
-        backgroundColor: colors.darken[2]
+        height: '100%',
+      },
+      ad: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        padding: 8,
+        backgroundColor: colors.dark
       }
     }
 
     return (
       <div style={s.container}>
-        <div>
-          {coms.map(function (com, i) {
-            if (!com.params.length) {
-              // return false
-            }
-            return (
-              <Command
-                {...props}
-                key={i}
-                index={i}
-                command={com} />
-            )
-          })}
-        </div>
-        <div style={{
-            padding: scale[3]
-          }}>
-          <Button onClick={this.addPoint}
-            style={{
-              display: 'block',
-              textAlign: 'center',
-              width: '100%',
+        <div style={s.inner}>
+          <div>
+            {coms.map(function (com, i) {
+              if (!com.params.length) {
+                // return false
+              }
+              return (
+                <Command
+                  {...props}
+                  key={i}
+                  index={i}
+                  command={com} />
+              )
+            })}
+          </div>
+          <div style={{
+              padding: scale[3]
             }}>
-            + Add Point
-          </Button>
+            <Button onClick={this.addPoint}
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                width: '100%',
+              }}>
+              + Add Point
+            </Button>
+          </div>
+        </div>
+        <div style={s.ad}>
+          <CarbonAd />
         </div>
       </div>
     )

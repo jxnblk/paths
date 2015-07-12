@@ -19,9 +19,9 @@ class Button extends React.Component {
       boxSizing: 'border-box',
       border: '1px solid',
       borderRadius: 2,
-      color: props.primary ? colors.dark : 'inherit',
-      backgroundColor: props.primary ? colors.blue : 'transparent',
-      borderColor: props.primary ? 'transparent' : colors.darken[3],
+      color: props.active ? colors.blue : 'inherit',
+      backgroundColor: props.active ? colors.darken[3] : 'transparent',
+      borderColor: props.active ? 'transparent' : colors.darken[3],
       cursor: 'pointer'
     }, props.style)
 

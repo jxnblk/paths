@@ -38,23 +38,23 @@ class Toolbar extends React.Component {
         <Table pad>
           <Table.Cell>
             <Button
-              primary={props.grid}
+              active={props.grid}
               onClick={toggleGrid}>
-              Grid
+              Grid {props.grid ? 'On' : 'Off'}
             </Button>
           </Table.Cell>
           <Table.Cell>
             <Button
-              primary={props.snap}
+              active={props.snap}
               onClick={toggleSnap}>
-              Snap
+              Snap {props.snap ? 'On' : 'Off'}
             </Button>
           </Table.Cell>
           <Table.Cell>
             <Button
-              primary={props.preview}
+              active={props.preview}
               onClick={togglePreview}>
-              Preview
+              Preview {props.preview ? 'On' : 'Off'}
             </Button>
           </Table.Cell>
           {/*
