@@ -51,7 +51,6 @@ class Toolbar extends React.Component {
               max={64}
               onChange={props.handleChange} />
           </Table.Cell>
-          */}
           <Table.Cell>
             <Input
               type='number'
@@ -61,6 +60,8 @@ class Toolbar extends React.Component {
               max={64}
               onChange={props.handleChange} />
           </Table.Cell>
+          */}
+          <Table.Cell fill />
           <Table.Cell>
             <Input
               type='number'

@@ -2,6 +2,7 @@
 import React from 'react'
 import pathast from 'path-ast'
 import getPrevKey from '../util/get-previous-key'
+import { colors } from '../data'
 
 class Guides extends React.Component {
 
@@ -20,7 +21,7 @@ class Guides extends React.Component {
       current: {
         vectorEffect: 'non-scaling-stroke',
         strokeWidth: 3,
-        stroke: 'cyan'
+        stroke: colors.blue
       }
     }
 

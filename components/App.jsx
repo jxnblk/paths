@@ -4,6 +4,7 @@ import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
 import Canvas from './Canvas.jsx'
 import Commands from './Commands.jsx'
+import css from '../app.css'
 
 class App extends React.Component {
 

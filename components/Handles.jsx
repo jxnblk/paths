@@ -1,6 +1,7 @@
 
 import React from 'react'
 import previousKey from '../util/get-previous-key'
+import { colors } from '../data'
 
 class Handles extends React.Component {
 
@@ -10,13 +11,15 @@ class Handles extends React.Component {
     this.handleMouseUp = this.handleMouseUp.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
-    this.selectPoint = this.selectPoint.bind(this)
     this.state = {
       isMoving: false
     }
   }
 
-  handleMouseDown (e) {
+  handleMouseDown (i, e) {
+    if (typeof i === 'number') {
+      this.props.selectPoint(i)
+    }
     this.setState({ isMoving: true })
   }
 
@@ -25,65 +28,69 @@ class Handles extends React.Component {
   }
 
   handleMouseLeave (e) {
-    console.log('mouseleave', e)
     this.setState({ isMoving: false })
   }
 
   handleMouseMove (e) {
     if (this.state.isMoving) {
-      let ast = this.props.ast
-      let i = this.props.current
+      let props = this.props
+      let { ast, zoom, padding } = props
+      let i = props.current
       let com = ast.commands[i]
-      let zoom = this.props.zoom
-      let res = this.props.resolution2
+      let res = props.resolution2
       let ev = e.nativeEvent
-      console.log(this.props.padding * zoom)
-      let x = ev.offsetX / zoom - this.props.padding
-      let y = ev.offsetY / zoom - this.props.padding
+      let x = ev.offsetX / zoom - padding
+      let y = ev.offsetY / zoom - padding
       if (this.props.snap) {
-        x = Math.floor(x / res) * res || com.params.x || 0
-        y = Math.floor(y / res) * res || com.params.y || 0
+        x = Math.floor(x / res) * res || 0
+        y = Math.floor(y / res) * res || 0
       }
-      com.params.x = com.params.x ? x : null
-      com.params.y = com.params.y ? y : null
+      if (x < 0) {
+        x = 0
+      } else if (x > this.props.width) {
+        x = this.props.width
+      }
+      if (y < 0) {
+        y = 0
+      } else if (y > this.props.height) {
+        y = this.props.height
+      }
+      com.params.x = typeof com.params.x !== 'undefined' ? x : null
+      com.params.y = typeof com.params.y !== 'undefined' ? y : null
       this.props.updateAst(ast)
-      //console.log('mousemove', x, y)
     }
   }
 
-  selectPoint (i) {
-  }
-
   render () {
+    let self = this
     let props = this.props
     let { ast, current, zoom } = props
     let r1 = 8 / zoom
     let r2 = 12 / zoom
+
     let points = ast.commands
       .filter(function(command) {
         return Object.keys(command.params).length
       })
       .map(function(command, i) {
         let params = command.params
-        let prev = ast.commands[i - 1] ? ast.commands[i - 1].params : ast.commands[0].params
         return {
-          cx: params.x || prev.x,
-          cy: params.y || prev.y,
+          cx: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, i, 'x'),
+          cy: typeof params.y !== 'undefined' ? params.y : previousKey(ast.commands, i, 'y'),
           r: r1
         }
       })
 
     let curr = ast.commands[current].params
-    let prev = ast.commands[current - 1] ? ast.commands[current - 1].params : ast.commands[0].params
 
     let c = {
-      cx: curr.x || previousKey(ast.commands, current, 'x') || prev.x,
-      cy: curr.y || previousKey(ast.commands, current, 'y') || prev.y,
+      cx: typeof curr.x !== 'undefined' ? curr.x : previousKey(ast.commands, current, 'x'),
+      cy: typeof curr.y !== 'undefined' ? curr.y :  previousKey(ast.commands, current, 'y'),
       r: r2
     }
 
-    function selectPoint (e) {
-      props.selectPoint(this)
+    function selectPoint (i, e) {
+      props.selectPoint(i)
     }
 
     let styles = {
@@ -106,13 +113,14 @@ class Handles extends React.Component {
         vectorEffect: 'non-scaling-stroke',
       },
       current: {
-        fill: 'cyan',
+        fill: colors.blue,
+        stroke: 'none',
         opacity: .25,
         cursor: 'pointer',
         vectorEffect: 'non-scaling-stroke',
       },
       currentRing: {
-        stroke: 'cyan',
+        stroke: colors.blue,
         vectorEffect: 'non-scaling-stroke',
       }
     }
@@ -133,13 +141,16 @@ class Handles extends React.Component {
               <circle
                 cx={p.cx}
                 cy={p.cy}
-                r={p.r}
-                onClick={selectPoint.bind(i)}
+                r={r2 * 2}
+                tabIndex='1'
+                onFocus={selectPoint.bind(self, i)}
+                onMouseDown={self.handleMouseDown.bind(self, i)}
+                onMouseMove={self.handleMouseMove}
                 style={styles.point} />
               <circle
                 cx={p.cx}
                 cy={p.cy}
-                r={p.r}
+                r={current === i ? r2 : p.r}
                 style={styles.pointRing} />
             </g>
           )
@@ -147,7 +158,8 @@ class Handles extends React.Component {
         <circle
           cx={c.cx}
           cy={c.cy}
-          r={c.r}
+          r={this.state.isMoving ? 2 * c.r : c.r}
+          tabIndex='1'
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}
           onMouseUp={this.handleMouseUp}

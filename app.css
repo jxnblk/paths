@@ -1,0 +1,14 @@
+
+circle:focus {
+  outline: none;
+  box-shadow: 0 0 4px var(--blue);
+}
+
+input:focus,
+select:focus,
+button:focus,
+a:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--blue) !important;
+}
+

@@ -72,7 +72,7 @@ class Command extends React.Component {
     let s = {
       div: {
         padding: scale[3],
-        boxShadow: active ? 'inset 0 0 0 2px ' + colors.cyan : null
+        boxShadow: active ? 'inset 0 0 0 2px ' + colors.blue : null
       },
       grid: {
         marginLeft: -scale[2],
