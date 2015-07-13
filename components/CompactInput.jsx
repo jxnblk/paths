@@ -47,7 +47,6 @@ class CompactInput extends React.Component {
 
     return (
       <div
-        tabIndex='1'
         style={s.div}>
         <label
           htmlFor={name}

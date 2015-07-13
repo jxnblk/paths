@@ -40,6 +40,7 @@ class AnchorDetails extends React.Component {
         transitionTimingFunction: 'ease-out'
       },
       values: {
+        fontSize: 12,
         whiteSpace: 'nowrap'
       }
     }

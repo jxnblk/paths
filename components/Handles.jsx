@@ -109,22 +109,22 @@ class Handles extends React.Component {
     let params = ast.commands[current].params
     switch (e.keyCode) {
       case 38: // Up
-        if (params.y > 0 && params.y < height) {
+        if (params.y > 0) {
           params.y = snap ? params.y - res : params.y - 1
         }
         break
       case 40: // Down
-        if (params.y > 0 && params.y < height) {
+        if (params.y < height) {
           params.y = snap ? params.y + res : params.y + 1
         }
         break
       case 37: // Left
-        if (params.x > 0 && params.x < width) {
+        if (params.x > 0) {
           params.x = snap ? params.x - res : params.x - 1
         }
         break
       case 39: // Right
-        if (params.x > 0 && params.x < width) {
+        if (params.x < width) {
           params.x = snap ? params.x + res : params.x + 1
         }
         break
