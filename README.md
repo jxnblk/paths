@@ -6,10 +6,12 @@ Edit SVG paths in the browser http://jxnblk.com/paths
 
 Paths is an SVG [path element](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/path)
 editor intended to demonstrate the path syntax in an interactive interface.
+Compared to other SVG elements, the path command syntax can look intimidating.
+This app is intended to help users understand how the commands work and how to get started with coding and manipulating paths.
 
-### Caveats
+#### Caveats
 
-This is only a demonstration app and is not intended to be a robust drawing application.
+This is only a demonstration app and is **not** intended to be a robust drawing application.
 Since this relies heavily on mouse events, the application does not work well on mobile touchscreen devices
 
 ## SVG Path Commands
@@ -78,7 +80,10 @@ draws an elliptical arc to the x/y coordinates.
 
 ## How-To Use the App
 
-- Use the form to the right to manually adjust the type and paramters for each command.
+Unlike other vector drawing applications, Paths has no tool palette or modes.
+Instead it exposes the path command syntax in a reactive user interface.
+
+- Use the form to the right to manually adjust the type and parameters for each command.
 - Add new points with the button below the form.
 - Remove points with the **×** button next to the command.
 - Click to select points on the canvas.
@@ -123,11 +128,18 @@ npm start
 
 Open <http://localhost:8080>
 
+
+## Related
+
+- [Building SVG Icons with React](http://jxnblk.com/react-icons/)
+- [Geomicons Open](http://geomicons.com) - hand-coded SVG icons
+
 ---
 
 Paths is built with
 [React](https://facebook.github.io/react/),
 [webpack](http://webpack.github.io/),
+and [path-ast](https://github.com/jxnblk/path-ast).
 
 MIT License
 

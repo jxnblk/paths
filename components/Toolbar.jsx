@@ -1,12 +1,14 @@
 
 import React from 'react'
 import pathast from 'path-ast'
+import { TweetButton, GithubButton } from 'blk'
 import makeSvg from '../util/make-svg'
 import Button from './Button.jsx'
 import LinkBtn from './LinkBtn.jsx'
 import Input from './Input.jsx'
 import Table from './Table.jsx'
 import Stepper from './Stepper.jsx'
+import Spacer from './Spacer.jsx'
 import { scale } from '../data'
 
 class Toolbar extends React.Component {
@@ -74,11 +76,8 @@ class Toolbar extends React.Component {
               Download
             </LinkBtn>
           </Table.Cell>
-          <Table.Cell fill />
           <Table.Cell>
-            <div style={s.text}>
-              Zoom {props.zoom}x
-            </div>
+            <Spacer />
           </Table.Cell>
           <Table.Cell>
             <Stepper
@@ -88,6 +87,32 @@ class Toolbar extends React.Component {
               max={64}
               onChange={updateZoom} />
           </Table.Cell>
+          <Table.Cell>
+            <div style={s.text}>
+              Zoom {props.zoom}x
+            </div>
+          </Table.Cell>
+          <Table.Cell fill />
+          <Table.Cell>
+            <LinkBtn href='https://github.com/jxnblk/paths'>
+              GitHub
+            </LinkBtn>
+          </Table.Cell>
+          <Table.Cell>
+            <Spacer />
+          </Table.Cell>
+          <Table.Cell>
+            <TweetButton
+              url='http://jxnblk.com/paths'
+              text='Build and edit SVGs in the browser' />
+          </Table.Cell>
+          {/*
+          <Table.Cell>
+            <GithubButton
+              user='jxnblk'
+              repo='paths' />
+          </Table.Cell>
+          */}
         </Table>
       </div>
     )
