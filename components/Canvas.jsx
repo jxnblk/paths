@@ -41,8 +41,7 @@ class Canvas extends React.Component {
       cell: {
         position: 'relative',
         display: 'table-cell',
-        verticalAlign: 'middle',
-        textAlign: 'center'
+        verticalAlign: 'middle'
       },
       header: {
         position: 'absolute',
