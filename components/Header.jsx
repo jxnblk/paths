@@ -6,7 +6,7 @@ class Header extends React.Component {
   render () {
     let s = {
       header: {
-        padding: '8px 16px'
+        padding: '12px 16px'
       },
       link: {
         fontSize: 14,

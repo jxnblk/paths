@@ -1,7 +1,9 @@
 
 import React from 'react'
 import { CarbonAd } from 'blk'
+import pathast from 'path-ast'
 import commands from 'path-ast/lib/keys'
+import roundAst from '../util/round-ast'
 import findCenter from '../util/find-center'
 import Command from './Command.jsx'
 import Button from './Button.jsx'
@@ -33,6 +35,7 @@ class Commands extends React.Component {
   render () {
     let props = this.props
     let { ast, styles, colors } = props
+    let code = pathast.stringify(roundAst(props.ast, 2))
 
     let coms = ast.commands.map(function(com) {
       let params = commands[com.type].map(function (key, i) {
@@ -60,19 +63,31 @@ class Commands extends React.Component {
         WebkitOverflowScrolling: 'touch',
         height: '100%',
       },
+      header: {
+        paddingLeft: scale[3],
+        paddingRight: scale[3],
+      },
+      code: {
+        fontFamily: 'inherit',
+        fontSize: 14
+      },
       ad: {
         position: 'absolute',
         left: 0,
         right: 0,
         bottom: 0,
-        padding: 8,
-        backgroundColor: colors.dark
+        padding: 16,
+        backgroundColor: colors.darken[4]
       }
     }
 
     return (
       <div style={s.container}>
         <div style={s.inner}>
+          <div style={s.header}>
+            <h3>Path Commands</h3>
+            <pre style={s.code}>{code}</pre>
+          </div>
           <div>
             {coms.map(function (com, i) {
               if (!com.params.length) {

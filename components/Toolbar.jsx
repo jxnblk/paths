@@ -37,6 +37,9 @@ class Toolbar extends React.Component {
     let s = {
       container: {
         padding: scale[1],
+      },
+      text: {
+        fontSize: 14,
       }
     }
 
@@ -73,13 +76,15 @@ class Toolbar extends React.Component {
           </Table.Cell>
           <Table.Cell fill />
           <Table.Cell>
-            <div>Zoom {props.zoom}x</div>
+            <div style={s.text}>
+              Zoom {props.zoom}x
+            </div>
           </Table.Cell>
           <Table.Cell>
             <Stepper
               value={props.zoom}
-              step={.5}
-              min={.5}
+              step={1}
+              min={1}
               max={64}
               onChange={updateZoom} />
           </Table.Cell>

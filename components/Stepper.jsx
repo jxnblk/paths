@@ -40,13 +40,19 @@ class Stepper extends React.Component {
         whiteSpace: 'nowrap'
       },
       left: {
-        fontSize: 16,
+        fontSize: 20,
+        lineHeight: 1,
+        paddingTop: 0,
+        paddingBottom: 0,
         width: scale[6],
         borderRadius: [radius, 0, 0, radius].join(' '),
         opacity: disabled.left ? .5 : null
       },
       right: {
-        fontSize: 16,
+        fontSize: 20,
+        lineHeight: 1,
+        paddingTop: 0,
+        paddingBottom: 0,
         width: scale[6],
         marginLeft: -1,
         borderRadius: [0, radius, radius, 0].join(' '),

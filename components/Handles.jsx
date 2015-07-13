@@ -35,6 +35,7 @@ class Handles extends React.Component {
   }
 
   handleMouseUp (e) {
+    console.log('mouse up')
     this.setState({ isMoving: false, params: false })
   }
 
@@ -188,9 +189,15 @@ class Handles extends React.Component {
           width={props.width + props.padding * 2}
           height={props.height + props.padding * 2}
           style={styles.mouseRect}
-          onMouseDown={this.handleAddPoint}
           onMouseUp={this.handleMouseUp}
           onMouseMove={this.handleMouseMove} />
+        <rect
+          width={props.width}
+          height={props.height}
+          style={styles.mouseRect}
+          onMouseDown={this.handleAddPoint}
+          onMouseMove={this.handleMouseMove}
+          onMouseUp={this.handleMouseUp} />
 
         {anchors.map(function(anchor, i) {
           return (

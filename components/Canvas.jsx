@@ -62,9 +62,6 @@ class Canvas extends React.Component {
           <div style={styles.table}>
             <div style={styles.cell}>
               <Svg {...props} />
-              {/*
-              <pre>{JSON.stringify(props, null, '  ')}</pre>
-              */}
             </div>
           </div>
         </div>

@@ -15,15 +15,15 @@ class CurrentAnchor extends React.Component {
         opacity: .25,
         cursor: 'pointer',
         vectorEffect: 'non-scaling-stroke',
+        transition: 'r .1s ease-out'
       },
       currentRing: {
         stroke: colors.blue,
+        strokeWidth: 3,
         vectorEffect: 'non-scaling-stroke',
+        transition: 'r .05s ease-out'
       }
     }
-
-    // ref
-    // r={this.state.isMoving ? 2 * c.r : c.r}
 
     return (
       <g>
@@ -39,7 +39,7 @@ class CurrentAnchor extends React.Component {
         <circle
           cx={x}
           cy={y}
-          r={r}
+          r={isMoving ? r * 1.25 : r}
           onMouseUp={props.onMouseUp}
           style={styles.currentRing} />
       </g>

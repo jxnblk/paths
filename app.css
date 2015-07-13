@@ -3,6 +3,10 @@ body {
   font-family: 'SF Compact Text', Roboto, 'Helvetica Neue', Helvetica, sans-serif;
 }
 
+pre {
+  overflow: auto;
+}
+
 circle:focus {
   outline: none;
 }
@@ -20,5 +24,15 @@ a:focus {
   box-shadow: 0 0 0 2px var(--blue) !important;
 }
 
+.truncate {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
+.scroll-x {
+  display: block;
+  overflow-x: auto;
+}
 
