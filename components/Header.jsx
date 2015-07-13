@@ -6,13 +6,14 @@ class Header extends React.Component {
   render () {
     let s = {
       header: {
-        padding: '12px 16px'
-      },
-      link: {
         fontSize: 14,
         fontWeight: 'bold',
         textTransform: 'uppercase',
         letterSpacing: '.2em',
+        padding: '12px 16px'
+      },
+      link: {
+        textTransform: 'uppercase',
         display: 'inline-block',
         color: 'inherit',
         textDecoration: 'none'

@@ -106,6 +106,9 @@ class Handles extends React.Component {
     let props = this.props
     let { ast, current, width, height, snap, res } = props
     let params = ast.commands[current].params
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
+      return
+    }
     switch (e.keyCode) {
       case 38: // Up
         e.preventDefault()
