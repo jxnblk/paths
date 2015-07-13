@@ -18,6 +18,12 @@ select:focus {
   background-color: var(--blue) !important;
 }
 
+button:disabled,
+select:disabled {
+  border-color: transparent !important;
+  opacity: .75 !important;
+}
+
 button:focus,
 a:focus {
   outline: none;

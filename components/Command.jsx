@@ -133,12 +133,14 @@ class Command extends React.Component {
               value={command.type}
               options={options}
               onFocus={this.handleFocus}
-              onChange={this.handleTypeChange} />
+              disabled={index === 0 ? true : false}
+              onChange={index === 0 ? null : this.handleTypeChange} />
           </Table.Cell>
           <Table.Cell nowrap>
             <Button
               title='Remove Point'
               onClick={this.removePoint}
+              disabled={index === 0 ? true : false}
               style={{
                 fontSize: 20
               }}>
