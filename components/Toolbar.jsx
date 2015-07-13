@@ -74,6 +74,9 @@ class Toolbar extends React.Component {
               Download
             </LinkBtn>
           </Table.Cell>
+          <Table.Cell>
+            {props.current}
+          </Table.Cell>
           <Table.Cell fill />
           <Table.Cell>
             <div style={s.text}>

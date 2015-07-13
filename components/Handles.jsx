@@ -91,7 +91,7 @@ class Handles extends React.Component {
       x = Math.floor(x / res) * res || 0
       y = Math.floor(y / res) * res || 0
     }
-    let index = current > -1 ? current : 1
+    let index = current > -1 ? current + 1 : 1
     ast.commands.splice(index, 0, {
       type: 'L',
       params: {
@@ -100,7 +100,8 @@ class Handles extends React.Component {
       }
     })
     props.updateAst(ast)
-    props.selectPoint(current + 1)
+    props.selectPoint(index)
+    this.setState({ isMoving: true, params: ['x', 'y'] })
   }
 
   handleKeyDown (e) {

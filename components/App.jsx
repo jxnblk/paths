@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { cloneDeep } from 'lodash'
 import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
 import Canvas from './Canvas.jsx'
@@ -39,9 +40,13 @@ class App extends React.Component {
 
   updateAst (ast) {
     let { history } = this.state
-    history.push(ast)
-    if (history.length > 64) {
-      history.unshift()
+    if (history.length && pathast.stringify(history[0]) !== pathast.stringify(ast)) {
+      history.unshift(cloneDeep(ast))
+    } else if (!history.length) {
+      history.unshift(cloneDeep(ast))
+    }
+    if (history.length > 128) {
+      history.pop()
     }
     this.setState({ ast: ast, history: history })
   }
@@ -66,15 +71,16 @@ class App extends React.Component {
   }
 
   undo () {
-    let { history } = this.state
+    let { history, ast } = this.state
     if (history.length) {
-      let ast = history.pop()
+      ast = history.shift()
       this.setState({ ast: ast })
     }
   }
 
   handleKeyDown (e) {
     if (e.metaKey && e.keyCode === 90) {
+      e.preventDefault()
       this.undo()
     }
   }
