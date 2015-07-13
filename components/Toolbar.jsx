@@ -45,7 +45,7 @@ class Toolbar extends React.Component {
 
     return (
       <div style={s.container}>
-        <Table pad>
+        <Table>
           <Table.Cell>
             <Button
               active={props.grid}

@@ -143,6 +143,9 @@ class Command extends React.Component {
               disabled={index === 0 ? true : false}
               style={{
                 fontSize: 20,
+                lineHeight: 1,
+                paddingTop: 0,
+                paddingBottom: 0,
                 display: index === 0 ? 'none' : null
               }}>
               &times;
