@@ -91,7 +91,8 @@ class Handles extends React.Component {
       x = Math.floor(x / res) * res || 0
       y = Math.floor(y / res) * res || 0
     }
-    ast.commands.splice(current + 1, 0, {
+    let index = current > -1 ? current : 1
+    ast.commands.splice(index, 0, {
       type: 'L',
       params: {
         x: x,

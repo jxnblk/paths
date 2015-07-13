@@ -5,7 +5,7 @@ import pathast from 'path-ast'
 import { debounce } from 'lodash'
 import roundAst from '../util/round-ast'
 
-class History extends React.Component {
+class UrlHistory extends React.Component {
 
   constructor () {
     super ()
@@ -53,5 +53,5 @@ class History extends React.Component {
 
 }
 
-export default History
+export default UrlHistory
 

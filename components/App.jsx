@@ -4,7 +4,7 @@ import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
 import Canvas from './Canvas.jsx'
 import Commands from './Commands.jsx'
-import History from './History.jsx'
+import UrlHistory from './UrlHistory.jsx'
 import css from '../app.css'
 
 class App extends React.Component {
@@ -26,17 +26,24 @@ class App extends React.Component {
       res: 2,
       snap: true,
       preview: false,
-      mode: 'select'
+      mode: 'select',
+      history: []
     }
     this.updateAst = this.updateAst.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.selectPoint = this.selectPoint.bind(this)
     this.updateState = this.updateState.bind(this)
     this.toggle = this.toggle.bind(this)
+    this.undo = this.undo.bind(this)
   }
 
   updateAst (ast) {
-    this.setState({ ast: ast })
+    let { history } = this.state
+    history.push(ast)
+    if (history.length > 64) {
+      history.unshift()
+    }
+    this.setState({ ast: ast, history: history })
   }
 
   handleChange (e) {
@@ -54,8 +61,22 @@ class App extends React.Component {
     this.setState({ [key]: val })
   }
 
-  updateState(key, val) {
+  updateState (key, val) {
     this.setState({ [key]: val })
+  }
+
+  undo () {
+    let { history } = this.state
+    if (history.length) {
+      let ast = history.pop()
+      this.setState({ ast: ast })
+    }
+  }
+
+  handleKeyDown (e) {
+    if (e.metaKey && e.keyCode === 90) {
+      this.undo()
+    }
   }
 
   render () {
@@ -67,7 +88,8 @@ class App extends React.Component {
     }
 
     return (
-      <div style={style}>
+      <div style={style}
+        onKeyDown={this.handleKeyDown.bind(this)}>
         <Grid>
           <Cell min={320}>
             <Canvas
@@ -87,7 +109,7 @@ class App extends React.Component {
               updateAst={this.updateAst} />
           </Cell>
         </Grid>
-        <History
+        <UrlHistory
           {...props}
           {...state}
           updateAst={this.updateAst} />

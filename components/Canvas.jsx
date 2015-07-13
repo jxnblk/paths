@@ -30,7 +30,6 @@ class Canvas extends React.Component {
         right: 0,
         bottom: 48,
         left: 0,
-        zIndex: 2,
         overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
       },
