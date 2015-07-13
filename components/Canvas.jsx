@@ -71,7 +71,7 @@ class Canvas extends React.Component {
         <div style={styles.social}>
           <TweetButton
             url='http://jxnblk.com/paths'
-            text='Web app to learn about the SVG path element' />
+            text='Build SVGs in the browser' />
         </div>
         <div style={styles.toolbar}>
           <Toolbar {...props} />

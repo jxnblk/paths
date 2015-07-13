@@ -142,7 +142,8 @@ class Command extends React.Component {
               onClick={this.removePoint}
               disabled={index === 0 ? true : false}
               style={{
-                fontSize: 20
+                fontSize: 20,
+                display: index === 0 ? 'none' : null
               }}>
               &times;
             </Button>

@@ -42,6 +42,10 @@ class AnchorDetails extends React.Component {
       values: {
         fontSize: 12,
         whiteSpace: 'nowrap'
+      },
+      removeButton: {
+        fontSize: 20,
+        display: current === 0 ? 'none': null
       }
     }
 
@@ -70,7 +74,7 @@ class AnchorDetails extends React.Component {
             <Button
               text='&times;'
               title='Remove Point'
-              style={{ fontSize: 20 }}
+              style={styles.removeButton}
               onClick={this.removePoint} />
           </Table.Cell>
         </Table>
