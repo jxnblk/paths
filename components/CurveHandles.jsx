@@ -8,7 +8,7 @@ class CurveHandles extends React.Component {
   render () {
     let props = this.props
     let { ast, current, zoom } = props
-    let params = ast.commands[current].params
+    let params = ast.commands[current] ? ast.commands[current].params : {}
     let handles = []
     let w = 10 / zoom
 

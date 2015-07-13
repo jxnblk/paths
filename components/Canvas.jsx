@@ -7,6 +7,16 @@ import Toolbar from './Toolbar.jsx'
 
 class Canvas extends React.Component {
 
+  constructor () {
+    super ()
+    this.deselect = this.deselect.bind(this)
+  }
+
+  deselect (e) {
+    e.stopPropagation()
+    this.props.selectPoint(-1)
+  }
+
   render () {
     let props = this.props
     let styles = {
@@ -20,7 +30,7 @@ class Canvas extends React.Component {
         right: 0,
         bottom: 48,
         left: 0,
-        //paddingBottom: 64,
+        zIndex: 2,
         overflow: 'auto',
         WebkitOverflowScrolling: 'touch',
       },
@@ -30,8 +40,10 @@ class Canvas extends React.Component {
         height: '100%',
       },
       cell: {
+        position: 'relative',
         display: 'table-cell',
         verticalAlign: 'middle',
+        textAlign: 'center'
       },
       header: {
         position: 'absolute',
@@ -57,7 +69,8 @@ class Canvas extends React.Component {
     }
 
     return (
-      <div style={styles.container}>
+      <div style={styles.container}
+        onClick={this.deselect}>
         <div style={styles.viewport}>
           <div style={styles.table}>
             <div style={styles.cell}>

@@ -35,7 +35,6 @@ class Handles extends React.Component {
   }
 
   handleMouseUp (e) {
-    console.log('mouse up')
     this.setState({ isMoving: false, params: false })
   }
 
@@ -109,11 +108,13 @@ class Handles extends React.Component {
     let params = ast.commands[current].params
     switch (e.keyCode) {
       case 38: // Up
+        e.preventDefault()
         if (params.y > 0) {
           params.y = snap ? params.y - res : params.y - 1
         }
         break
       case 40: // Down
+        e.preventDefault()
         if (params.y < height) {
           params.y = snap ? params.y + res : params.y + 1
         }
@@ -151,7 +152,7 @@ class Handles extends React.Component {
         }
       })
 
-    let params = ast.commands[current].params
+    let params = ast.commands[current] ? ast.commands[current].params : {}
 
     let currentAnchor = {
       x: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, current, 'x'),

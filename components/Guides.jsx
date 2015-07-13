@@ -33,9 +33,9 @@ class Guides extends React.Component {
       }
     }
 
-    let currentC
+    let currentC = false
     // Attempt to handle smoothto curves
-    if (ast.commands[current].type.match(/(S|T)/) && current > 1) {
+    if (ast.commands[current] && ast.commands[current].type.match(/(S|T)/) && current > 1) {
       currentC = {
         commands: [
           {
@@ -49,7 +49,7 @@ class Guides extends React.Component {
           ast.commands[current]
         ]
       }
-    } else {
+    } else if (ast.commands[current]) {
       currentC = {
         commands: [
           {
@@ -64,7 +64,7 @@ class Guides extends React.Component {
       }
     }
 
-    let currentD = pathast.stringify(currentC)
+    let currentD = currentC ? pathast.stringify(currentC) : ''
 
     if (preview) {
       return false

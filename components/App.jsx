@@ -51,7 +51,6 @@ class App extends React.Component {
 
   toggle (key) {
     let val = !this.state[key]
-    console.log
     this.setState({ [key]: val })
   }
 

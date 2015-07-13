@@ -6,7 +6,7 @@ class CurrentAnchor extends React.Component {
 
   render () {
     let props = this.props
-    let { x, y, zoom, isMoving } = props
+    let { x, y, zoom, isMoving, current } = props
     let r = 12 / zoom
     let styles = {
       current: {
@@ -23,6 +23,10 @@ class CurrentAnchor extends React.Component {
         vectorEffect: 'non-scaling-stroke',
         transition: 'r .05s ease-out'
       }
+    }
+
+    if (current < 0) {
+      return false
     }
 
     return (

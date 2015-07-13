@@ -13,6 +13,9 @@ class Svg extends React.Component {
     let { width, height, zoom, padding } = props
     let padX = width + padding * 2
     let padY = height + padding * 2
+    function stopClick (e) {
+      e.stopPropagation()
+    }
     let styles = {
       outer: {
         position: 'relative',
@@ -24,6 +27,7 @@ class Svg extends React.Component {
         margin: 'auto'
       }
     }
+
     return (
       <div style={styles.outer}>
         <svg
@@ -31,7 +35,8 @@ class Svg extends React.Component {
           width={padX * zoom}
           height={padY * zoom}
           style={styles.svg}
-          fill='currentcolor'>
+          fill='currentcolor'
+          onClick={stopClick}>
           <g transform={'translate(' + padding + ' ' + padding + ')'}>
             <Grid {...props} />
             <Path {...props} />
