@@ -86,7 +86,7 @@ class Commands extends React.Component {
         <div style={s.inner}>
           <div style={s.header}>
             <h3>Path Commands</h3>
-            <pre style={s.code}>{code}</pre>
+            <div style={s.code}>{code}</div>
           </div>
           <div>
             {coms.map(function (com, i) {
