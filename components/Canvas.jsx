@@ -21,7 +21,7 @@ class Canvas extends React.Component {
     let styles = {
       container: {
         position: 'relative',
-        height: '100vh',
+        height: 'calc(100vh - 48px)',
       },
       viewport: {
         position: 'absolute',
@@ -42,11 +42,6 @@ class Canvas extends React.Component {
         display: 'table-cell',
         verticalAlign: 'middle'
       },
-      header: {
-        position: 'absolute',
-        top: 0,
-        left: 0
-      },
       toolbar: {
         position: 'absolute',
         left: 0,
@@ -55,7 +50,6 @@ class Canvas extends React.Component {
         height: 48,
         overflowX: 'auto',
         WebkitOverflowScrolling: 'touch',
-        backgroundColor: props.colors.darken[1]
       }
     }
 
@@ -68,9 +62,6 @@ class Canvas extends React.Component {
               <Svg {...props} />
             </div>
           </div>
-        </div>
-        <div style={styles.header}>
-          <Header />
         </div>
         <div style={styles.toolbar}>
           <Toolbar {...props} />

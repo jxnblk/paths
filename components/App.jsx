@@ -3,9 +3,10 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
-import Canvas from './Canvas.jsx'
-import Commands from './Commands.jsx'
-import UrlHistory from './UrlHistory.jsx'
+import Header from './Header'
+import Canvas from './Canvas'
+import Commands from './Commands'
+import UrlHistory from './UrlHistory'
 import css from '../app.css'
 
 class App extends React.Component {
@@ -96,6 +97,7 @@ class App extends React.Component {
     return (
       <div style={style}
         onKeyDown={this.handleKeyDown.bind(this)}>
+        <Header />
         <Grid>
           <Cell min={320}>
             <Canvas

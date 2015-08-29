@@ -54,10 +54,9 @@ class Commands extends React.Component {
       container: {
         position: 'relative',
         boxSizing: 'border-box',
-        height: '100vh',
+        height: 'calc(100vh - 48px)',
         paddingTop: scale[3],
         paddingBottom: 128,
-        // backgroundColor: colors.darken[2]
       },
       inner: {
         overflow: 'auto',
@@ -70,7 +69,6 @@ class Commands extends React.Component {
         right: 0,
         bottom: 0,
         padding: 16,
-        backgroundColor: colors.darken[4]
       }
     }
 
