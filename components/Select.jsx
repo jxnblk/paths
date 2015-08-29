@@ -14,7 +14,7 @@ class Select extends React.Component {
         fontSize: 14,
         fontWeight: 'bold',
         display: 'block',
-        marginBottom: 4
+        marginBottom: 4,
       },
       select: {
         fontSize: 14,
@@ -24,12 +24,12 @@ class Select extends React.Component {
         paddingLeft: scale[1],
         paddingRight: scale[1],
         boxSizing: 'border-box',
-        borderColor: colors.lighten[3],
-        borderWidth: 1,
+        border: 0,
         boxShadow: 'none',
-        borderRadius: 2,
+        borderRadius: 0,
         color: 'inherit',
-        backgroundColor: colors.darken[3],
+        backgroundColor: 'transparent',
+        //backgroundColor: colors.darken[3],
         //WebkitAppearance: 'none',
       }
     }

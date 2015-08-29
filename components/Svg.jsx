@@ -44,7 +44,9 @@ class Svg extends React.Component {
             <Handles {...props} />
           </g>
         </svg>
+        {/*
         <AnchorDetails {...props} />
+          */}
       </div>
     )
   }

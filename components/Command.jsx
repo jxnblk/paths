@@ -21,8 +21,8 @@ class Command extends React.Component {
   }
 
   handleTypeChange (e) {
-    let ast = this.props.ast
-    let index = this.props.index
+    let { ast } = this.props
+    const { index } = this.props
     let value = e.target.value
     let command = ast.commands[index]
     let prevX = previousKey(ast.commands, index, 'x')
@@ -84,9 +84,9 @@ class Command extends React.Component {
 
   render () {
     let self = this
-    let props = this.props
-    let { command, index, scale, colors } = props
-    let options = Object.keys(commands)
+    const { props } = this
+    const { command, index, scale, colors } = props
+    const options = Object.keys(commands)
       .filter(function (key) {
         return key.match(/[A-Z]/)
       })
@@ -96,7 +96,7 @@ class Command extends React.Component {
       })
       .map(function(key) {
         return {
-          label: key + ': ' + commandNames[key],
+          label: key,
           value: key
         }
       })
@@ -105,26 +105,30 @@ class Command extends React.Component {
 
     let s = {
       div: {
-        padding: scale[3],
-        boxShadow: active ? 'inset 0 0 0 2px ' + colors.blue : null
+        //fontFamily: 'monospace',
+        //paddingTop: scale[1],
+        marginBottom: scale[1],
+        color: active ? colors.blue : 'inherit'
+        // boxShadow: active ? 'inset 0 0 0 2px ' + colors.blue : null
       },
       grid: {
-        marginLeft: -scale[2],
-        marginRight: -scale[2],
+        // marginLeft: -scale[2],
+        // marginRight: -scale[2],
       },
       cell: {
         display: 'inline-block',
+        verticalAlign: 'middle',
         boxSizing: 'border-box',
-        width: '50%',
-        paddingLeft: scale[2],
-        paddingRight: scale[2],
+        width: '25%',
+        //paddingLeft: scale[0],
+        //paddingRight: scale[0],
       }
     }
 
     return (
       <div style={s.div}>
-        <Table pad mb>
-          <Table.Cell fill>
+        <div style={s.grid}>
+          <div style={s.cell}>
             <Select
               {...props}
               name={'command-' + props.index}
@@ -135,8 +139,24 @@ class Command extends React.Component {
               onFocus={this.handleFocus}
               disabled={index === 0 ? true : false}
               onChange={index === 0 ? null : this.handleTypeChange} />
-          </Table.Cell>
-          <Table.Cell nowrap>
+          </div>
+          {command.params.map(function (param, j) {
+            return (
+              <div key={j}
+                style={s.cell}>
+                <CompactInput
+                  type='number'
+                  {...props}
+                  label={param.name}
+                  name={'command-' + props.index + '-' + param.name}
+                  value={Math.round(param.value * 100) / 100}
+                  step={props.snap ? (props.resolution2) : 1}
+                  onFocus={self.handleFocus}
+                  onChange={self.handleParamChange} />
+              </div>
+              )
+          })}
+          <div style={s.cell}>
             <Button
               title='Remove Point'
               onClick={this.removePoint}
@@ -150,26 +170,7 @@ class Command extends React.Component {
               }}>
               &times;
             </Button>
-          </Table.Cell>
-        </Table>
-        <div style={s.grid}>
-          {command.params.map(function (param, j) {
-            return (
-              <div key={j}
-                style={s.cell}>
-                <CompactInput
-                  type='number'
-                  {...props}
-                  mb
-                  label={param.name}
-                  name={'command-' + props.index + '-' + param.name}
-                  value={Math.round(param.value * 100) / 100}
-                  step={props.snap ? (props.resolution2) : 1}
-                  onFocus={self.handleFocus}
-                  onChange={self.handleParamChange} />
-              </div>
-              )
-          })}
+          </div>
         </div>
       </div>
     )
