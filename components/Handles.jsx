@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { findLastIndex } from 'lodash'
+import { cloneDeep, findLastIndex } from 'lodash'
 import { stringify } from 'path-ast'
 import previousKey from '../util/get-previous-key'
 import { colors } from '../data'
@@ -20,6 +20,7 @@ class Handles extends React.Component {
     this.handleAddPoint = this.handleAddPoint.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleTranslate = this.handleTranslate.bind(this)
+    this.handleScale = this.handleScale.bind(this)
     this.state = {
       isMoving: false,
       isTranslating: false,
@@ -45,6 +46,7 @@ class Handles extends React.Component {
     this.setState({
       isMoving: false,
       isTranslating: false,
+      isScaling: false,
       params: false,
       start: false
     })
@@ -55,6 +57,7 @@ class Handles extends React.Component {
       isMoving: false,
       params: false,
       isTranslating: false,
+      isScaling: false,
       start: false
     })
   }
@@ -62,7 +65,8 @@ class Handles extends React.Component {
   handleMouseMove (e) {
     const { props } = this
     const { ast, zoom, padding, res } = props
-    let newAst = ast
+    const { start } = this.state
+    let newAst = cloneDeep(ast)
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
@@ -93,12 +97,28 @@ class Handles extends React.Component {
       }
       this.props.updateAst(newAst)
     } else if (this.state.isTranslating) {
-      const { start } = this.state
       newAst.translate(x - start.x, y - start.y)
       this.setState({
         start: { x, y }
       })
       this.props.updateAst(newAst)
+    } else if (this.state.isScaling) {
+      const center = newAst.getCenter()
+      // const cx = center.x // zoom // - padding
+      // const cy = center.y // zoom // - padding
+      const cx = 32
+      const cy = cx
+      const xN = (x - cx) / (start.x - cx)
+      const yN = (y - cy) / (start.y - cy)
+      const n = (Math.abs(xN) >= Math.abs(yN) ? xN : yN)
+      if (isFinite(n) && n > 0) {
+        // newAst.scale(n, c, c)
+        newAst.scale(n)
+        this.setState({
+          start: { x, y }
+        })
+        this.props.updateAst(newAst)
+      }
     }
   }
 
@@ -106,7 +126,7 @@ class Handles extends React.Component {
     const { props } = this
     const { ast, zoom, padding, current, snap, res } = props
     const ev = e.nativeEvent
-    let newAst = ast
+    let newAst = cloneDeep(ast)
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
@@ -145,7 +165,18 @@ class Handles extends React.Component {
   }
 
   handleScale (e) {
-    console.log('scale')
+    const { zoom, padding, snap, res } = this.props
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / res) * res || 0
+      y = Math.floor(y / res) * res || 0
+    }
+    this.setState({
+      isScaling: true,
+      start: { x, y }
+    })
   }
 
   handleKeyDown (e) {
