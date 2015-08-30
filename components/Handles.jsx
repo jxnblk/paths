@@ -256,7 +256,8 @@ class Handles extends React.Component {
       segment: {
         fill: 'none',
         stroke: 'transparent',
-        strokeWidth: 4
+        strokeWidth: 4,
+        cursor: 'pointer'
       }
     }
 
