@@ -3,12 +3,12 @@ import React from 'react'
 import commands from 'path-ast/lib/keys'
 import commandNames from '../util/command-names'
 import previousKey from '../util/get-previous-key'
-import Select from './Select.jsx'
-import Input from './Input.jsx'
-import CompactInput from './CompactInput.jsx'
-import Button from './Button.jsx'
-import Table from './Table.jsx'
-import Pad from './Pad.jsx'
+import Select from './Select'
+import Input from './Input'
+import CompactInput from './CompactInput'
+import Button from './Button'
+import Table from './Table'
+import Pad from './Pad'
 
 class Command extends React.Component {
 
@@ -166,6 +166,7 @@ class Command extends React.Component {
                 lineHeight: 1,
                 paddingTop: 0,
                 paddingBottom: 0,
+                opacity: .5,
                 display: index === 0 ? 'none' : null
               }}>
               &times;

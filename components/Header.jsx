@@ -2,6 +2,7 @@
 import React from 'react'
 import { TweetButton, GithubButton } from 'blk'
 import Table from './Table.jsx'
+import Spacer from './Spacer'
 import LinkBtn from './LinkBtn.jsx'
 
 class Header extends React.Component {
@@ -45,6 +46,9 @@ class Header extends React.Component {
             <LinkBtn href='https://github.com/jxnblk/paths'>
               GitHub
             </LinkBtn>
+          </Table.Cell>
+          <Table.Cell>
+            <Spacer />
           </Table.Cell>
           <Table.Cell>
             <TweetButton

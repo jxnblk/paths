@@ -18,7 +18,7 @@
     "json-loader": "^0.5.2",
     "lodash": "^3.10.0",
     "node-libs-browser": "^0.5.2",
-    "path-ast": "^1.0.1",
+    "path-ast": "^1.1.0",
     "postcss-basscss": "^0.2.2",
     "qs": "^4.0.0",
     "react": "^0.13.3",
