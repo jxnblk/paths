@@ -1,5 +1,7 @@
 
 import React from 'react'
+import { findLastIndex } from 'lodash'
+import { stringify } from 'path-ast'
 import previousKey from '../util/get-previous-key'
 import { colors } from '../data'
 import Anchor from './Anchor.jsx'
@@ -80,27 +82,27 @@ class Handles extends React.Component {
     }
   }
 
-  handleAddPoint (e) {
-    let props = this.props
-    let { ast, zoom, padding, current, snap } = props
-    let res = props.resolution2
-    let ev = e.nativeEvent
+  handleAddPoint (i, e) {
+    const { props } = this
+    const { ast, zoom, padding, current, snap } = props
+    const res = props.resolution2
+    const ev = e.nativeEvent
+    let newAst = ast
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
       x = Math.floor(x / res) * res || 0
       y = Math.floor(y / res) * res || 0
     }
-    let index = current > -1 ? current + 1 : 1
-    ast.commands.splice(index, 0, {
+    newAst.commands.splice(i, 0, {
       type: 'L',
       params: {
         x: x,
         y: y,
       }
     })
-    props.updateAst(ast)
-    props.selectPoint(index)
+    props.updateAst(newAst)
+    props.selectPoint(i)
     this.setState({ isMoving: true, params: ['x', 'y'] })
   }
 
@@ -140,12 +142,11 @@ class Handles extends React.Component {
 
   render () {
     let self = this
-    let props = this.props
-    let state = this.state
-    let { ast, current, zoom, preview } = props
-    let q3 = 32 / zoom
+    const { props, state } = this
+    const { ast, current, zoom, preview } = props
+    const q3 = 32 / zoom
 
-    let anchors = ast.commands
+    const anchors = ast.commands
       .filter(function(command) {
         return Object.keys(command.params).length
       })
@@ -157,14 +158,45 @@ class Handles extends React.Component {
         }
       })
 
-    let params = ast.commands[current] ? ast.commands[current].params : {}
+    const segments = ast.commands
+      .filter((command) => {
+        return Object.keys(command.params).length || command.type.match(/z|Z/)
+      })
+      .map((command, i) => {
+        if (command.type.match(/z|Z/)) {
+          const lastMIndex = findLastIndex(ast.commands, (command, j) => {
+            if (j > i) { return false }
+            return command.type.match(/m|M/)
+          })
+          command.type = 'L'
+          command.params = {
+            x: ast.commands[lastMIndex].params.x || 0,
+            y: ast.commands[lastMIndex].params.y || 0,
+          }
+        }
+        let segment = {
+          commands: [
+            {
+              type: 'M',
+              params: {
+                x: previousKey(ast.commands, i, 'x'),
+                y: previousKey(ast.commands, i, 'y'),
+              }
+            },
+            command
+          ]
+        }
+        return segment
+      })
 
-    let currentAnchor = {
+    const params = ast.commands[current] ? ast.commands[current].params : {}
+
+    const currentAnchor = {
       x: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, current, 'x'),
       y: typeof params.y !== 'undefined' ? params.y :  previousKey(ast.commands, current, 'y')
     }
 
-    let styles = {
+    const styles = {
       g: {
         fill: 'none',
         stroke: 'currentcolor',
@@ -178,6 +210,11 @@ class Handles extends React.Component {
         fill: colors.blue,
         stroke: 'none',
         cursor: 'pointer'
+      },
+      segment: {
+        fill: 'none',
+        stroke: 'transparent',
+        strokeWidth: 4
       }
     }
 
@@ -201,9 +238,25 @@ class Handles extends React.Component {
           width={props.width}
           height={props.height}
           style={styles.mouseRect}
-          onMouseDown={this.handleAddPoint}
           onMouseMove={this.handleMouseMove}
           onMouseUp={this.handleMouseUp} />
+
+        {/*
+          onMouseDown={this.handleAddPoint}
+        */}
+
+        {segments.map((segment, i) => {
+          const d = stringify(segment)
+          return (
+            <path
+              key={i}
+              ref={`segment-${i}`}
+              d={d}
+              style={styles.segment}
+              onMouseDown={this.handleAddPoint.bind(this, i)}
+              />
+          )
+        })}
 
         {anchors.map(function(anchor, i) {
           return (

@@ -41,7 +41,7 @@ class App extends React.Component {
 
   updateAst (ast) {
     let { history } = this.state
-    if (history.length && pathast.stringify(history[0]) !== pathast.stringify(ast)) {
+    if (history.length && history[0] !== pathast.stringify(ast)) {
       history.unshift(cloneDeep(ast))
     } else if (!history.length) {
       history.unshift(cloneDeep(ast))
@@ -72,10 +72,10 @@ class App extends React.Component {
   }
 
   undo () {
-    let { history, ast } = this.state
+    const { history, ast } = this.state
     if (history.length) {
-      ast = history.shift()
-      this.setState({ ast: ast })
+      const newAst = history.shift()
+      this.setState({ ast: newAst })
     }
   }
 
