@@ -18,9 +18,12 @@ class Handles extends React.Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
     this.handleAddPoint = this.handleAddPoint.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.handleTranslate = this.handleTranslate.bind(this)
     this.state = {
       isMoving: false,
-      params: false
+      isTranslating: false,
+      params: false,
+      start: false
     }
   }
 
@@ -37,29 +40,40 @@ class Handles extends React.Component {
   }
 
   handleMouseUp (e) {
-    this.setState({ isMoving: false, params: false })
+    this.setState({
+      isMoving: false,
+      isTranslating: false,
+      params: false,
+      start: false
+    })
   }
 
   handleMouseLeave (e) {
-    this.setState({ isMoving: false, params: false })
+    this.setState({
+      isMoving: false,
+      params: false,
+      isTranslating: false,
+      start: false
+    })
   }
 
   handleMouseMove (e) {
+    const { props } = this
+    const { ast, zoom, padding } = props
+    let newAst = ast
+    let res = props.resolution2
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (props.snap) {
+      x = Math.floor(x / res) * res || 0
+      y = Math.floor(y / res) * res || 0
+    }
     if (this.state.isMoving) {
-      let props = this.props
-      let { ast, zoom, padding } = props
       let i = props.current
-      let params = ast.commands[i].params
+      let params = newAst.commands[i].params
       let px = this.state.params[0]
       let py = this.state.params[1]
-      let res = props.resolution2
-      let ev = e.nativeEvent
-      let x = ev.offsetX / zoom - padding
-      let y = ev.offsetY / zoom - padding
-      if (props.snap) {
-        x = Math.floor(x / res) * res || 0
-        y = Math.floor(y / res) * res || 0
-      }
       if (x < 0) {
         x = 0
       } else if (x > props.width) {
@@ -76,9 +90,14 @@ class Handles extends React.Component {
       if (typeof params[py] !== 'undefined') {
         params[py] = y
       }
-      //com.params.x = typeof com.params.x !== 'undefined' ? x : undefined
-      //com.params.y = typeof com.params.y !== 'undefined' ? y : undefined
-      this.props.updateAst(ast)
+      this.props.updateAst(newAst)
+    } else if (this.state.isTranslating) {
+      const { start } = this.state
+      newAst.translate(x - start.x, y - start.y)
+      this.setState({
+        start: { x, y }
+      })
+      this.props.updateAst(newAst)
     }
   }
 
@@ -104,6 +123,22 @@ class Handles extends React.Component {
     props.updateAst(newAst)
     props.selectPoint(i)
     this.setState({ isMoving: true, params: ['x', 'y'] })
+  }
+
+  handleTranslate (e) {
+    const { zoom, padding, snap, resolution2 } = this.props
+    const res = resolution2
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / res) * res || 0
+      y = Math.floor(y / res) * res || 0
+    }
+    this.setState({
+      isTranslating: true,
+      start: { x, y }
+    })
   }
 
   handleKeyDown (e) {
@@ -145,6 +180,8 @@ class Handles extends React.Component {
     const { props, state } = this
     const { ast, current, zoom, preview } = props
     const q3 = 32 / zoom
+
+    const d = stringify(ast)
 
     const anchors = ast.commands
       .filter(function(command) {
@@ -211,6 +248,11 @@ class Handles extends React.Component {
         stroke: 'none',
         cursor: 'pointer'
       },
+      path: {
+        fill: 'transparent',
+        stroke: 'none',
+        cursor: 'move'
+      },
       segment: {
         fill: 'none',
         stroke: 'transparent',
@@ -241,17 +283,20 @@ class Handles extends React.Component {
           onMouseMove={this.handleMouseMove}
           onMouseUp={this.handleMouseUp} />
 
-        {/*
-          onMouseDown={this.handleAddPoint}
-        */}
+        <path d={d}
+          style={styles.path}
+          onMouseDown={this.handleTranslate}
+          onMouseMove={this.handleMouseMove}
+          onMouseUp={this.handleMouseUp}
+        />
 
         {segments.map((segment, i) => {
-          const d = stringify(segment)
+          const segD = stringify(segment)
           return (
             <path
               key={i}
               ref={`segment-${i}`}
-              d={d}
+              d={segD}
               style={styles.segment}
               onMouseDown={this.handleAddPoint.bind(this, i)}
               />
