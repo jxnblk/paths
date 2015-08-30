@@ -4,9 +4,10 @@ import { findLastIndex } from 'lodash'
 import { stringify } from 'path-ast'
 import previousKey from '../util/get-previous-key'
 import { colors } from '../data'
-import Anchor from './Anchor.jsx'
-import CurrentAnchor from './CurrentAnchor.jsx'
-import CurveHandles from './CurveHandles.jsx'
+import Anchor from './Anchor'
+import CurrentAnchor from './CurrentAnchor'
+import CurveHandles from './CurveHandles'
+import PathHandles from './PathHandles'
 
 class Handles extends React.Component {
 
@@ -22,6 +23,7 @@ class Handles extends React.Component {
     this.state = {
       isMoving: false,
       isTranslating: false,
+      isScaling: false,
       params: false,
       start: false
     }
@@ -59,9 +61,8 @@ class Handles extends React.Component {
 
   handleMouseMove (e) {
     const { props } = this
-    const { ast, zoom, padding } = props
+    const { ast, zoom, padding, res } = props
     let newAst = ast
-    let res = props.resolution2
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
@@ -103,8 +104,7 @@ class Handles extends React.Component {
 
   handleAddPoint (i, e) {
     const { props } = this
-    const { ast, zoom, padding, current, snap } = props
-    const res = props.resolution2
+    const { ast, zoom, padding, current, snap, res } = props
     const ev = e.nativeEvent
     let newAst = ast
     let x = ev.offsetX / zoom - padding
@@ -122,12 +122,14 @@ class Handles extends React.Component {
     })
     props.updateAst(newAst)
     props.selectPoint(i)
-    this.setState({ isMoving: true, params: ['x', 'y'] })
+    this.setState({
+      isMoving: true,
+      params: ['x', 'y']
+    })
   }
 
   handleTranslate (e) {
-    const { zoom, padding, snap, resolution2 } = this.props
-    const res = resolution2
+    const { zoom, padding, snap, res } = this.props
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
@@ -135,10 +137,15 @@ class Handles extends React.Component {
       x = Math.floor(x / res) * res || 0
       y = Math.floor(y / res) * res || 0
     }
+    this.props.updateState('selected', true)
     this.setState({
       isTranslating: true,
       start: { x, y }
     })
+  }
+
+  handleScale (e) {
+    console.log('scale')
   }
 
   handleKeyDown (e) {
@@ -178,7 +185,7 @@ class Handles extends React.Component {
   render () {
     let self = this
     const { props, state } = this
-    const { ast, current, zoom, preview } = props
+    const { ast, current, zoom, preview, selected } = this.props
     const q3 = 32 / zoom
 
     const d = stringify(ast)
@@ -318,6 +325,14 @@ class Handles extends React.Component {
             />
           )
         })}
+
+        {selected && (
+          <PathHandles {...props}
+            handleScale={this.handleScale}
+            handleMouseMove={this.handleMouseMove}
+            handleMouseUp={this.handleMouseUp}
+          />
+          )}
 
         <CurrentAnchor
           {...props}

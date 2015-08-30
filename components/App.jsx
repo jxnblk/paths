@@ -16,15 +16,12 @@ class App extends React.Component {
     this.state = {
       ast: pathast.parse('M8 48 L56 48 L32 12 Z'),
       current: 1,
+      selected: false,
       width: 64,
       height: 64,
       aspectRatio: [1, 1],
       zoom: 6,
       grid: true,
-      resolution: [16, 2],
-      resolution1: 16,
-      resolution2: 2,
-      // Replace resolutions with
       res: 2,
       snap: true,
       preview: false,
@@ -59,7 +56,7 @@ class App extends React.Component {
   }
 
   selectPoint (i) {
-    this.setState({ current: i })
+    this.setState({ selected: false, current: i })
   }
 
   toggle (key) {
@@ -85,6 +82,7 @@ class App extends React.Component {
       this.undo()
     }
   }
+
 
   render () {
     let state = this.state

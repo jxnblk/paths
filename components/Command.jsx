@@ -150,7 +150,7 @@ class Command extends React.Component {
                   label={param.name}
                   name={'command-' + props.index + '-' + param.name}
                   value={Math.round(param.value * 100) / 100}
-                  step={props.snap ? (props.resolution2) : 1}
+                  step={props.snap ? (props.res) : 1}
                   onFocus={self.handleFocus}
                   onChange={self.handleParamChange} />
               </div>

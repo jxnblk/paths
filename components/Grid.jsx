@@ -4,7 +4,7 @@ import React from 'react'
 class Grid extends React.Component {
 
   render () {
-    let { grid, preview, width, height, resolution, resolution1, resolution2 } = this.props
+    let { grid, preview, width, height, res } = this.props
 
     function getLines (x, y, step) {
       let lines = []
@@ -24,10 +24,10 @@ class Grid extends React.Component {
     }
 
     let minor = [
-      getLines(width / resolution2, height / resolution2, resolution2)
+      getLines(width / res, height / res, res)
     ].join(' ')
     let major = [
-      getLines(width / resolution1, height / resolution1, resolution1)
+      getLines(width / 16, height / 16, 16)
     ].join(' ')
 
     let styles = {
