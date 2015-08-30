@@ -15,8 +15,14 @@ class PathHandles extends React.Component {
     const xPoints = ast.commands.map((command) => {
       return command.params.x || null
     })
+    .filter((point) => {
+      return point
+    })
     const yPoints = ast.commands.map((command) => {
       return command.params.y || null
+    })
+    .filter((point) => {
+      return point
     })
     const minX = min(xPoints)
     const maxX = max(xPoints)

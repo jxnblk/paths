@@ -23,7 +23,8 @@ class Svg extends React.Component {
       },
       svg: {
         display: 'block',
-        margin: 'auto'
+        margin: 'auto',
+        overflow: 'visible'
       }
     }
 

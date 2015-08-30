@@ -104,10 +104,8 @@ class Handles extends React.Component {
       this.props.updateAst(newAst)
     } else if (this.state.isScaling) {
       const center = newAst.getCenter()
-      // const cx = center.x // zoom // - padding
-      // const cy = center.y // zoom // - padding
-      const cx = 32
-      const cy = cx
+      const cx = center.x // zoom // - padding
+      const cy = center.y // zoom // - padding
       const xN = (x - cx) / (start.x - cx)
       const yN = (y - cy) / (start.y - cy)
       const n = (Math.abs(xN) >= Math.abs(yN) ? xN : yN)
@@ -181,8 +179,9 @@ class Handles extends React.Component {
 
   handleKeyDown (e) {
     let props = this.props
-    let { ast, current, width, height, snap, res } = props
-    let params = ast.commands[current].params
+    const { ast, current, width, height, snap, res } = props
+    let newAst = cloneDeep(ast)
+    let params = newAst.commands[current].params
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
       return
     }
@@ -210,13 +209,14 @@ class Handles extends React.Component {
         }
         break
     }
-    props.updateAst(ast)
+    props.updateAst(newAst)
   }
 
   render () {
     let self = this
     const { props, state } = this
     const { ast, current, zoom, preview, selected } = this.props
+    let newAst = cloneDeep(ast)
     const q3 = 32 / zoom
 
     const d = stringify(ast)
@@ -233,7 +233,7 @@ class Handles extends React.Component {
         }
       })
 
-    const segments = ast.commands
+    const segments = newAst.commands
       .filter((command) => {
         return Object.keys(command.params).length || command.type.match(/z|Z/)
       })
