@@ -306,6 +306,7 @@ class Handles extends React.Component {
     return (
       <g style={styles.g}
         onKeyDown={this.handleKeyDown}
+        onMouseUp={this.handleMouseUp}
         onMouseLeave={this.handleMouseLeave}>
 
         <rect
@@ -314,20 +315,21 @@ class Handles extends React.Component {
           height={props.height + props.padding * 2}
           style={styles.mouseRect}
           onMouseUp={this.handleMouseUp}
-          onMouseMove={this.handleMouseMove} />
+          onMouseMove={this.handleMouseMove}
+        />
         <rect
           width={props.width}
           height={props.height}
           style={styles.mouseRect}
           onMouseMove={this.handleMouseMove}
-          onMouseUp={this.handleMouseUp} />
+          onMouseUp={this.handleMouseUp}
+        />
 
         <path d={d}
           style={styles.path}
           onMouseDown={this.handleTranslate}
           onMouseMove={this.handleMouseMove}
-          onMouseUp={this.handleMouseUp}
-        />
+          onMouseUp={this.handleMouseUp} />
 
         {segments.map((segment, i) => {
           const segD = stringify(segment)
@@ -338,7 +340,7 @@ class Handles extends React.Component {
               d={segD}
               style={styles.segment}
               onMouseDown={this.handleAddPoint.bind(this, i)}
-              />
+              onMouseUp={this.handleMouseUp} />
           )
         })}
 
