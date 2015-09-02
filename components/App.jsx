@@ -15,14 +15,13 @@ class App extends React.Component {
     super ()
     this.state = {
       ast: pathast.parse('M8 48 L56 48 L32 12 Z'),
-      current: 1,
-      selected: false,
+      current: 1, // current point
+      selected: false, // full path selected
       width: 64,
       height: 64,
-      aspectRatio: [1, 1],
       zoom: 6,
       grid: true,
-      res: 2,
+      resolution: 2,
       snap: true,
       preview: false,
       mode: 'select',
@@ -77,7 +76,9 @@ class App extends React.Component {
   }
 
   handleKeyDown (e) {
+    console.log(e.keyCode)
     if (e.metaKey && e.keyCode === 90) {
+      console.log('undo', e.keyCode)
       e.preventDefault()
       this.undo()
     }

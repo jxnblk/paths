@@ -85,7 +85,7 @@ class Command extends React.Component {
   render () {
     let self = this
     const { props } = this
-    const { command, index, scale, colors } = props
+    const { command, current, index, scale, colors, snap, resolution } = props
     const options = Object.keys(commands)
       .filter(function (key) {
         return key.match(/[A-Z]/)
@@ -101,7 +101,7 @@ class Command extends React.Component {
         }
       })
 
-    let active = index === props.current
+    let active = index === current
 
     let s = {
       div: {
@@ -131,7 +131,7 @@ class Command extends React.Component {
           <div style={s.cell}>
             <Select
               {...props}
-              name={'command-' + props.index}
+              name={'command-' + index}
               label={'Command'}
               hideLabel
               value={command.type}
@@ -148,9 +148,9 @@ class Command extends React.Component {
                   type='number'
                   {...props}
                   label={param.name}
-                  name={'command-' + props.index + '-' + param.name}
+                  name={'command-' + index + '-' + param.name}
                   value={Math.round(param.value * 100) / 100}
-                  step={props.snap ? (props.res) : 1}
+                  step={snap ? (resolution) : 1}
                   onFocus={self.handleFocus}
                   onChange={self.handleParamChange} />
               </div>

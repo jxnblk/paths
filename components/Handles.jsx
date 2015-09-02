@@ -64,15 +64,15 @@ class Handles extends React.Component {
 
   handleMouseMove (e) {
     const { props } = this
-    const { ast, zoom, padding, res } = props
+    const { ast, zoom, padding, resolution } = props
     const { start } = this.state
     let newAst = cloneDeep(ast)
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (props.snap) {
-      x = Math.floor(x / res) * res || 0
-      y = Math.floor(y / res) * res || 0
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
     }
     if (this.state.isMoving) {
       let i = props.current
@@ -122,14 +122,14 @@ class Handles extends React.Component {
 
   handleAddPoint (i, e) {
     const { props } = this
-    const { ast, zoom, padding, current, snap, res } = props
+    const { ast, zoom, padding, current, snap, resolution } = props
     const ev = e.nativeEvent
     let newAst = cloneDeep(ast)
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
-      x = Math.floor(x / res) * res || 0
-      y = Math.floor(y / res) * res || 0
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
     }
     newAst.commands.splice(i, 0, {
       type: 'L',
@@ -147,13 +147,13 @@ class Handles extends React.Component {
   }
 
   handleTranslate (e) {
-    const { zoom, padding, snap, res } = this.props
+    const { zoom, padding, snap, resolution } = this.props
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
-      x = Math.floor(x / res) * res || 0
-      y = Math.floor(y / res) * res || 0
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
     }
     this.props.updateState('selected', true)
     this.setState({
@@ -163,13 +163,13 @@ class Handles extends React.Component {
   }
 
   handleScale (e) {
-    const { zoom, padding, snap, res } = this.props
+    const { zoom, padding, snap, resolution } = this.props
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
-      x = Math.floor(x / res) * res || 0
-      y = Math.floor(y / res) * res || 0
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
     }
     this.setState({
       isScaling: true,
@@ -179,7 +179,7 @@ class Handles extends React.Component {
 
   handleKeyDown (e) {
     let props = this.props
-    const { ast, current, width, height, snap, res } = props
+    const { ast, current, width, height, snap, resolution } = props
     let newAst = cloneDeep(ast)
     let params = newAst.commands[current].params
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
@@ -189,23 +189,23 @@ class Handles extends React.Component {
       case 38: // Up
         e.preventDefault()
         if (params.y > 0) {
-          params.y = snap ? params.y - res : params.y - 1
+          params.y = snap ? params.y - resolution : params.y - 1
         }
         break
       case 40: // Down
         e.preventDefault()
         if (params.y < height) {
-          params.y = snap ? params.y + res : params.y + 1
+          params.y = snap ? params.y + resolution : params.y + 1
         }
         break
       case 37: // Left
         if (params.x > 0) {
-          params.x = snap ? params.x - res : params.x - 1
+          params.x = snap ? params.x - resolution : params.x - 1
         }
         break
       case 39: // Right
         if (params.x < width) {
-          params.x = snap ? params.x + res : params.x + 1
+          params.x = snap ? params.x + resolution : params.x + 1
         }
         break
     }
