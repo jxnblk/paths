@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { throttle, cloneDeep } from 'lodash'
 import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
 import Header from './Header'
@@ -25,9 +25,15 @@ class App extends React.Component {
       snap: true,
       preview: false,
       mode: 'select',
-      history: []
+      history: [],
+      isPointMoving: false,
+      isTranslating: false,
+      isScaling: false,
+      transformParams: false,
+      transformStart: false,
     }
     this.updateAst = this.updateAst.bind(this)
+    this.setHistory = this.setHistory.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.selectPoint = this.selectPoint.bind(this)
     this.updateState = this.updateState.bind(this)
@@ -36,6 +42,13 @@ class App extends React.Component {
   }
 
   updateAst (ast) {
+    // throttle(this.setHistory, 1000)(ast)
+    // Consider setting this on mouseup/keyup?
+    this.setHistory(ast)
+    this.setState({ ast })
+  }
+
+  setHistory (ast) {
     let { history } = this.state
     if (history.length && history[0] !== pathast.stringify(ast)) {
       history.unshift(cloneDeep(ast))
@@ -45,7 +58,7 @@ class App extends React.Component {
     if (history.length > 128) {
       history.pop()
     }
-    this.setState({ ast: ast, history: history })
+    this.setState({ history })
   }
 
   handleChange (e) {
@@ -63,8 +76,8 @@ class App extends React.Component {
     this.setState({ [key]: val })
   }
 
-  updateState (key, val) {
-    this.setState({ [key]: val })
+  updateState (state) {
+    this.setState(state)
   }
 
   undo () {
@@ -76,14 +89,11 @@ class App extends React.Component {
   }
 
   handleKeyDown (e) {
-    console.log(e.keyCode)
     if (e.metaKey && e.keyCode === 90) {
-      console.log('undo', e.keyCode)
       e.preventDefault()
       this.undo()
     }
   }
-
 
   render () {
     let state = this.state

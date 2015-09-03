@@ -21,73 +21,83 @@ class Handles extends React.Component {
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleTranslate = this.handleTranslate.bind(this)
     this.handleScale = this.handleScale.bind(this)
-    this.state = {
-      isMoving: false,
-      isTranslating: false,
-      isScaling: false,
-      params: false,
-      start: false
-    }
   }
 
   handleMouseDown (params, e) {
+    const { updateState } = this.props
     if (typeof params === 'number') {
       this.props.selectPoint(params)
       params = ['x', 'y']
     } else if (Array.isArray(params)){
     }
-    this.setState({
-      isMoving: true,
-      params: params
+    updateState({
+      isPointMoving: true,
+      transformParams: params
     })
   }
 
   handleMouseUp (e) {
-    this.setState({
-      isMoving: false,
+    const { updateState } = this.props
+    updateState({
+      isPointMoving: false,
       isTranslating: false,
       isScaling: false,
-      params: false,
-      start: false
+      transformParams: false,
+      transformStart: false
     })
   }
 
   handleMouseLeave (e) {
-    this.setState({
-      isMoving: false,
-      params: false,
+    const { updateState } = this.props
+    updateState({
+      isPointMoving: false,
       isTranslating: false,
       isScaling: false,
-      start: false
+      transformParams: false,
+      transformStart: false
     })
   }
 
   handleMouseMove (e) {
-    const { props } = this
-    const { ast, zoom, padding, resolution } = props
-    const { start } = this.state
+    const {
+      ast,
+      updateAst,
+      updateState,
+      isPointMoving,
+      isTranslating,
+      isScaling,
+      transformStart,
+      transformParams,
+      current,
+      width,
+      height,
+      snap,
+      zoom,
+      padding,
+      resolution
+    } = this.props
     let newAst = cloneDeep(ast)
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
-    if (props.snap) {
+    if (snap) {
       x = Math.floor(x / resolution) * resolution || 0
       y = Math.floor(y / resolution) * resolution || 0
     }
-    if (this.state.isMoving) {
-      let i = props.current
+    if (isPointMoving) {
+      let i = current
       let params = newAst.commands[i].params
-      let px = this.state.params[0]
-      let py = this.state.params[1]
+      let px = transformParams[0]
+      let py = transformParams[1]
       if (x < 0) {
         x = 0
-      } else if (x > props.width) {
-        x = props.width
+      } else if (x > width) {
+        x = width
       }
       if (y < 0) {
         y = 0
-      } else if (y > props.height) {
-        y = props.height
+      } else if (y > height) {
+        y = height
       }
       if (typeof params[px] !== 'undefined') {
         params[px] = x
@@ -95,34 +105,42 @@ class Handles extends React.Component {
       if (typeof params[py] !== 'undefined') {
         params[py] = y
       }
-      this.props.updateAst(newAst)
-    } else if (this.state.isTranslating) {
-      newAst.translate(x - start.x, y - start.y)
-      this.setState({
-        start: { x, y }
-      })
-      this.props.updateAst(newAst)
-    } else if (this.state.isScaling) {
+      updateAst(newAst)
+    } else if (isTranslating) {
+      newAst.translate(x - transformStart.x, y - transformStart.y)
+      updateState({ transformStart: { x, y } })
+      updateAst(newAst)
+    } else if (isScaling) {
       const center = newAst.getCenter()
       const cx = center.x // zoom // - padding
       const cy = center.y // zoom // - padding
-      const xN = (x - cx) / (start.x - cx)
-      const yN = (y - cy) / (start.y - cy)
+      const xN = (x - cx) / (transformStart.x - cx)
+      const yN = (y - cy) / (transformStart.y - cy)
       const n = (Math.abs(xN) >= Math.abs(yN) ? xN : yN)
       if (isFinite(n) && n > 0) {
         // newAst.scale(n, c, c)
         newAst.scale(n)
-        this.setState({
-          start: { x, y }
+        updateState({
+          transformStart: { x, y }
         })
-        this.props.updateAst(newAst)
+        updateAst(newAst)
       }
     }
   }
 
   handleAddPoint (i, e) {
     const { props } = this
-    const { ast, zoom, padding, current, snap, resolution } = props
+    const {
+      ast,
+      zoom,
+      padding,
+      current,
+      snap,
+      resolution,
+      updateAst,
+      selectPoint,
+      updateState
+    } = this.props
     const ev = e.nativeEvent
     let newAst = cloneDeep(ast)
     let x = ev.offsetX / zoom - padding
@@ -138,16 +156,22 @@ class Handles extends React.Component {
         y: y,
       }
     })
-    props.updateAst(newAst)
-    props.selectPoint(i)
-    this.setState({
-      isMoving: true,
-      params: ['x', 'y']
+    updateAst(newAst)
+    selectPoint(i)
+    updateState({
+      isPointMoving: true,
+      transformParams: ['x', 'y']
     })
   }
 
   handleTranslate (e) {
-    const { zoom, padding, snap, resolution } = this.props
+    const {
+      zoom,
+      padding,
+      snap,
+      resolution,
+      updateState
+    } = this.props
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
@@ -155,15 +179,21 @@ class Handles extends React.Component {
       x = Math.floor(x / resolution) * resolution || 0
       y = Math.floor(y / resolution) * resolution || 0
     }
-    this.props.updateState('selected', true)
-    this.setState({
+    updateState({
+      selected: true,
       isTranslating: true,
-      start: { x, y }
+      transformStart: { x, y }
     })
   }
 
   handleScale (e) {
-    const { zoom, padding, snap, resolution } = this.props
+    const {
+      zoom,
+      padding,
+      snap,
+      resolution,
+      updateState
+    } = this.props
     const ev = e.nativeEvent
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
@@ -171,15 +201,22 @@ class Handles extends React.Component {
       x = Math.floor(x / resolution) * resolution || 0
       y = Math.floor(y / resolution) * resolution || 0
     }
-    this.setState({
+    updateState({
       isScaling: true,
-      start: { x, y }
+      transformStart: { x, y }
     })
   }
 
   handleKeyDown (e) {
-    let props = this.props
-    const { ast, current, width, height, snap, resolution } = props
+    const {
+      ast,
+      current,
+      width,
+      height,
+      snap,
+      resolution,
+      updateAst
+    } = this.props
     let newAst = cloneDeep(ast)
     let params = newAst.commands[current].params
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
@@ -209,12 +246,12 @@ class Handles extends React.Component {
         }
         break
     }
-    props.updateAst(newAst)
+    updateAst(newAst)
   }
 
   render () {
     let self = this
-    const { props, state } = this
+    const { props } = this
     const { ast, current, zoom, preview, selected } = this.props
     let newAst = cloneDeep(ast)
     const q3 = 32 / zoom
@@ -344,7 +381,7 @@ class Handles extends React.Component {
           )
         })}
 
-        {anchors.map(function(anchor, i) {
+        {anchors.map((anchor, i) => {
           return (
             <Anchor
               key={i}
@@ -369,7 +406,6 @@ class Handles extends React.Component {
 
         <CurrentAnchor
           {...props}
-          {...state}
           {...currentAnchor}
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}

@@ -29,7 +29,7 @@ class Toolbar extends React.Component {
     }
 
     function updateZoom (val) {
-      props.updateState('zoom', val)
+      props.updateState({ zoom: val })
     }
 
     let svg = makeSvg(props.ast)
