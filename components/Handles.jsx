@@ -396,6 +396,7 @@ class Handles extends React.Component {
           )
         })}
 
+        {/*
         {selected && (
           <PathHandles {...props}
             handleScale={this.handleScale}
@@ -403,6 +404,7 @@ class Handles extends React.Component {
             handleMouseUp={this.handleMouseUp}
           />
           )}
+        */}
 
         <CurrentAnchor
           {...props}
