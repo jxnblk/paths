@@ -1,10 +1,13 @@
 
 import React from 'react'
+import { cloneDeep, findLastIndex } from 'lodash'
+import { stringify } from 'path-ast'
 import previousKey from '../util/get-previous-key'
 import { colors } from '../data'
-import Anchor from './Anchor.jsx'
-import CurrentAnchor from './CurrentAnchor.jsx'
-import CurveHandles from './CurveHandles.jsx'
+import Anchor from './Anchor'
+import CurrentAnchor from './CurrentAnchor'
+import CurveHandles from './CurveHandles'
+import PathHandles from './PathHandles'
 
 class Handles extends React.Component {
 
@@ -16,57 +19,85 @@ class Handles extends React.Component {
     this.handleMouseLeave = this.handleMouseLeave.bind(this)
     this.handleAddPoint = this.handleAddPoint.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.state = {
-      isMoving: false,
-      params: false
-    }
+    this.handleTranslate = this.handleTranslate.bind(this)
+    this.handleScale = this.handleScale.bind(this)
   }
 
   handleMouseDown (params, e) {
+    const { updateState } = this.props
     if (typeof params === 'number') {
       this.props.selectPoint(params)
       params = ['x', 'y']
     } else if (Array.isArray(params)){
     }
-    this.setState({
-      isMoving: true,
-      params: params
+    updateState({
+      isPointMoving: true,
+      transformParams: params
     })
   }
 
   handleMouseUp (e) {
-    this.setState({ isMoving: false, params: false })
+    const { updateState } = this.props
+    updateState({
+      isPointMoving: false,
+      isTranslating: false,
+      isScaling: false,
+      transformParams: false,
+      transformStart: false
+    })
   }
 
   handleMouseLeave (e) {
-    this.setState({ isMoving: false, params: false })
+    const { updateState } = this.props
+    updateState({
+      isPointMoving: false,
+      isTranslating: false,
+      isScaling: false,
+      transformParams: false,
+      transformStart: false
+    })
   }
 
   handleMouseMove (e) {
-    if (this.state.isMoving) {
-      let props = this.props
-      let { ast, zoom, padding } = props
-      let i = props.current
-      let params = ast.commands[i].params
-      let px = this.state.params[0]
-      let py = this.state.params[1]
-      let res = props.resolution2
-      let ev = e.nativeEvent
-      let x = ev.offsetX / zoom - padding
-      let y = ev.offsetY / zoom - padding
-      if (props.snap) {
-        x = Math.floor(x / res) * res || 0
-        y = Math.floor(y / res) * res || 0
-      }
+    const {
+      ast,
+      updateAst,
+      updateState,
+      isPointMoving,
+      isTranslating,
+      isScaling,
+      transformStart,
+      transformParams,
+      current,
+      width,
+      height,
+      snap,
+      zoom,
+      padding,
+      resolution
+    } = this.props
+    let newAst = cloneDeep(ast)
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
+    }
+    if (isPointMoving) {
+      let i = current
+      let params = newAst.commands[i].params
+      let px = transformParams[0]
+      let py = transformParams[1]
       if (x < 0) {
         x = 0
-      } else if (x > props.width) {
-        x = props.width
+      } else if (x > width) {
+        x = width
       }
       if (y < 0) {
         y = 0
-      } else if (y > props.height) {
-        y = props.height
+      } else if (y > height) {
+        y = height
       }
       if (typeof params[px] !== 'undefined') {
         params[px] = x
@@ -74,40 +105,120 @@ class Handles extends React.Component {
       if (typeof params[py] !== 'undefined') {
         params[py] = y
       }
-      //com.params.x = typeof com.params.x !== 'undefined' ? x : undefined
-      //com.params.y = typeof com.params.y !== 'undefined' ? y : undefined
-      this.props.updateAst(ast)
+      updateAst(newAst)
+    } else if (isTranslating) {
+      newAst.translate(x - transformStart.x, y - transformStart.y)
+      updateState({ transformStart: { x, y } })
+      updateAst(newAst)
+    } else if (isScaling) {
+      const center = newAst.getCenter()
+      const cx = center.x // zoom // - padding
+      const cy = center.y // zoom // - padding
+      const xN = (x - cx) / (transformStart.x - cx)
+      const yN = (y - cy) / (transformStart.y - cy)
+      const n = (Math.abs(xN) >= Math.abs(yN) ? xN : yN)
+      if (isFinite(n) && n > 0) {
+        // newAst.scale(n, c, c)
+        newAst.scale(n)
+        updateState({
+          transformStart: { x, y }
+        })
+        updateAst(newAst)
+      }
     }
   }
 
-  handleAddPoint (e) {
-    let props = this.props
-    let { ast, zoom, padding, current, snap } = props
-    let res = props.resolution2
-    let ev = e.nativeEvent
+  handleAddPoint (i, e) {
+    const { props } = this
+    const {
+      ast,
+      zoom,
+      padding,
+      current,
+      snap,
+      resolution,
+      updateAst,
+      selectPoint,
+      updateState
+    } = this.props
+    const ev = e.nativeEvent
+    let newAst = cloneDeep(ast)
     let x = ev.offsetX / zoom - padding
     let y = ev.offsetY / zoom - padding
     if (snap) {
-      x = Math.floor(x / res) * res || 0
-      y = Math.floor(y / res) * res || 0
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
     }
-    let index = current > -1 ? current + 1 : 1
-    ast.commands.splice(index, 0, {
+    newAst.commands.splice(i, 0, {
       type: 'L',
       params: {
         x: x,
         y: y,
       }
     })
-    props.updateAst(ast)
-    props.selectPoint(index)
-    this.setState({ isMoving: true, params: ['x', 'y'] })
+    updateAst(newAst)
+    selectPoint(i)
+    updateState({
+      isPointMoving: true,
+      transformParams: ['x', 'y']
+    })
+  }
+
+  handleTranslate (e) {
+    const {
+      zoom,
+      padding,
+      snap,
+      resolution,
+      updateState
+    } = this.props
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
+    }
+    updateState({
+      selected: true,
+      isTranslating: true,
+      transformStart: { x, y }
+    })
+  }
+
+  handleScale (e) {
+    const {
+      zoom,
+      padding,
+      snap,
+      resolution,
+      updateState
+    } = this.props
+    const ev = e.nativeEvent
+    let x = ev.offsetX / zoom - padding
+    let y = ev.offsetY / zoom - padding
+    if (snap) {
+      x = Math.floor(x / resolution) * resolution || 0
+      y = Math.floor(y / resolution) * resolution || 0
+    }
+    updateState({
+      isScaling: true,
+      transformStart: { x, y }
+    })
   }
 
   handleKeyDown (e) {
-    let props = this.props
-    let { ast, current, width, height, snap, res } = props
-    let params = ast.commands[current].params
+    const {
+      ast,
+      current,
+      width,
+      height,
+      snap,
+      resolution,
+      updateAst
+    } = this.props
+    let newAst = cloneDeep(ast)
+    let params = newAst.commands[current].params
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
       return
     }
@@ -115,37 +226,39 @@ class Handles extends React.Component {
       case 38: // Up
         e.preventDefault()
         if (params.y > 0) {
-          params.y = snap ? params.y - res : params.y - 1
+          params.y = snap ? params.y - resolution : params.y - 1
         }
         break
       case 40: // Down
         e.preventDefault()
         if (params.y < height) {
-          params.y = snap ? params.y + res : params.y + 1
+          params.y = snap ? params.y + resolution : params.y + 1
         }
         break
       case 37: // Left
         if (params.x > 0) {
-          params.x = snap ? params.x - res : params.x - 1
+          params.x = snap ? params.x - resolution : params.x - 1
         }
         break
       case 39: // Right
         if (params.x < width) {
-          params.x = snap ? params.x + res : params.x + 1
+          params.x = snap ? params.x + resolution : params.x + 1
         }
         break
     }
-    props.updateAst(ast)
+    updateAst(newAst)
   }
 
   render () {
     let self = this
-    let props = this.props
-    let state = this.state
-    let { ast, current, zoom, preview } = props
-    let q3 = 32 / zoom
+    const { props } = this
+    const { ast, current, zoom, preview, selected } = this.props
+    let newAst = cloneDeep(ast)
+    const q3 = 32 / zoom
 
-    let anchors = ast.commands
+    const d = stringify(ast)
+
+    const anchors = ast.commands
       .filter(function(command) {
         return Object.keys(command.params).length
       })
@@ -157,14 +270,45 @@ class Handles extends React.Component {
         }
       })
 
-    let params = ast.commands[current] ? ast.commands[current].params : {}
+    const segments = newAst.commands
+      .filter((command) => {
+        return Object.keys(command.params).length || command.type.match(/z|Z/)
+      })
+      .map((command, i) => {
+        if (command.type.match(/z|Z/)) {
+          const lastMIndex = findLastIndex(ast.commands, (command, j) => {
+            if (j > i) { return false }
+            return command.type.match(/m|M/)
+          })
+          command.type = 'L'
+          command.params = {
+            x: ast.commands[lastMIndex].params.x || 0,
+            y: ast.commands[lastMIndex].params.y || 0,
+          }
+        }
+        let segment = {
+          commands: [
+            {
+              type: 'M',
+              params: {
+                x: previousKey(ast.commands, i, 'x'),
+                y: previousKey(ast.commands, i, 'y'),
+              }
+            },
+            command
+          ]
+        }
+        return segment
+      })
 
-    let currentAnchor = {
+    const params = ast.commands[current] ? ast.commands[current].params : {}
+
+    const currentAnchor = {
       x: typeof params.x !== 'undefined' ? params.x : previousKey(ast.commands, current, 'x'),
       y: typeof params.y !== 'undefined' ? params.y :  previousKey(ast.commands, current, 'y')
     }
 
-    let styles = {
+    const styles = {
       g: {
         fill: 'none',
         stroke: 'currentcolor',
@@ -178,6 +322,17 @@ class Handles extends React.Component {
         fill: colors.blue,
         stroke: 'none',
         cursor: 'pointer'
+      },
+      path: {
+        fill: 'transparent',
+        stroke: 'none',
+        cursor: 'move'
+      },
+      segment: {
+        fill: 'none',
+        stroke: 'transparent',
+        strokeWidth: 4,
+        cursor: 'pointer'
       }
     }
 
@@ -188,6 +343,7 @@ class Handles extends React.Component {
     return (
       <g style={styles.g}
         onKeyDown={this.handleKeyDown}
+        onMouseUp={this.handleMouseUp}
         onMouseLeave={this.handleMouseLeave}>
 
         <rect
@@ -196,16 +352,36 @@ class Handles extends React.Component {
           height={props.height + props.padding * 2}
           style={styles.mouseRect}
           onMouseUp={this.handleMouseUp}
-          onMouseMove={this.handleMouseMove} />
+          onMouseMove={this.handleMouseMove}
+        />
         <rect
           width={props.width}
           height={props.height}
           style={styles.mouseRect}
-          onMouseDown={this.handleAddPoint}
+          onMouseMove={this.handleMouseMove}
+          onMouseUp={this.handleMouseUp}
+        />
+
+        <path d={d}
+          style={styles.path}
+          onMouseDown={this.handleTranslate}
           onMouseMove={this.handleMouseMove}
           onMouseUp={this.handleMouseUp} />
 
-        {anchors.map(function(anchor, i) {
+        {segments.map((segment, i) => {
+          const segD = stringify(segment)
+          return (
+            <path
+              key={i}
+              ref={`segment-${i}`}
+              d={segD}
+              style={styles.segment}
+              onMouseDown={this.handleAddPoint.bind(this, i)}
+              onMouseUp={this.handleMouseUp} />
+          )
+        })}
+
+        {anchors.map((anchor, i) => {
           return (
             <Anchor
               key={i}
@@ -220,9 +396,18 @@ class Handles extends React.Component {
           )
         })}
 
+        {/*
+        {selected && (
+          <PathHandles {...props}
+            handleScale={this.handleScale}
+            handleMouseMove={this.handleMouseMove}
+            handleMouseUp={this.handleMouseUp}
+          />
+          )}
+        */}
+
         <CurrentAnchor
           {...props}
-          {...state}
           {...currentAnchor}
           onMouseDown={this.handleMouseDown}
           onMouseMove={this.handleMouseMove}

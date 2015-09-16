@@ -1,11 +1,12 @@
 
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { throttle, cloneDeep } from 'lodash'
 import pathast from 'path-ast'
 import { Grid, Cell } from 'rgx'
-import Canvas from './Canvas.jsx'
-import Commands from './Commands.jsx'
-import UrlHistory from './UrlHistory.jsx'
+import Header from './Header'
+import Canvas from './Canvas'
+import Commands from './Commands'
+import UrlHistory from './UrlHistory'
 import css from '../app.css'
 
 class App extends React.Component {
@@ -14,23 +15,25 @@ class App extends React.Component {
     super ()
     this.state = {
       ast: pathast.parse('M8 48 L56 48 L32 12 Z'),
-      current: 1,
+      current: 1, // current point
+      selected: false, // full path selected
       width: 64,
       height: 64,
-      aspectRatio: [1, 1],
       zoom: 6,
       grid: true,
-      resolution: [16, 2],
-      resolution1: 16,
-      resolution2: 2,
-      // Replace resolutions with
-      res: 2,
+      resolution: 2,
       snap: true,
       preview: false,
       mode: 'select',
-      history: []
+      history: [],
+      isPointMoving: false,
+      isTranslating: false,
+      isScaling: false,
+      transformParams: false,
+      transformStart: false,
     }
     this.updateAst = this.updateAst.bind(this)
+    this.setHistory = this.setHistory.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.selectPoint = this.selectPoint.bind(this)
     this.updateState = this.updateState.bind(this)
@@ -39,8 +42,15 @@ class App extends React.Component {
   }
 
   updateAst (ast) {
+    // throttle(this.setHistory, 1000)(ast)
+    // Consider setting this on mouseup/keyup?
+    this.setHistory(ast)
+    this.setState({ ast })
+  }
+
+  setHistory (ast) {
     let { history } = this.state
-    if (history.length && pathast.stringify(history[0]) !== pathast.stringify(ast)) {
+    if (history.length && history[0] !== pathast.stringify(ast)) {
       history.unshift(cloneDeep(ast))
     } else if (!history.length) {
       history.unshift(cloneDeep(ast))
@@ -48,7 +58,7 @@ class App extends React.Component {
     if (history.length > 128) {
       history.pop()
     }
-    this.setState({ ast: ast, history: history })
+    this.setState({ history })
   }
 
   handleChange (e) {
@@ -58,7 +68,7 @@ class App extends React.Component {
   }
 
   selectPoint (i) {
-    this.setState({ current: i })
+    this.setState({ selected: false, current: i })
   }
 
   toggle (key) {
@@ -66,15 +76,15 @@ class App extends React.Component {
     this.setState({ [key]: val })
   }
 
-  updateState (key, val) {
-    this.setState({ [key]: val })
+  updateState (state) {
+    this.setState(state)
   }
 
   undo () {
-    let { history, ast } = this.state
+    const { history, ast } = this.state
     if (history.length) {
-      ast = history.shift()
-      this.setState({ ast: ast })
+      const newAst = history.shift()
+      this.setState({ ast: newAst })
     }
   }
 
@@ -96,6 +106,7 @@ class App extends React.Component {
     return (
       <div style={style}
         onKeyDown={this.handleKeyDown.bind(this)}>
+        <Header />
         <Grid>
           <Cell min={320}>
             <Canvas

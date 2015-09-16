@@ -1,7 +1,7 @@
 
 import React from 'react'
 import qs from 'qs'
-import pathast from 'path-ast'
+import { stringify, parse } from 'path-ast'
 import { debounce } from 'lodash'
 import roundAst from '../util/round-ast'
 
@@ -14,27 +14,27 @@ class UrlHistory extends React.Component {
   }
 
   updateUrl (manual) {
-    let props = this.props
-    let history = window.history
-    let ast = roundAst(props.ast)
-    let q = qs.stringify({
-      d: pathast.stringify(ast)
+    const { props } = this
+    const history = window.history
+    const ast = roundAst(props.ast)
+    const d = stringify(ast)
+    const q = qs.stringify({
+      d: d
     })
-    history.pushState(ast, '', '?' + q)
+    history.pushState(d, '', '?' + q)
   }
 
   updateState (e) {
-    let props = this.props
-    let q = window.location.search.replace(/^\?/, '')
-    let params = qs.parse(q)
+    const { props } = this
+    const q = window.location.search.replace(/^\?/, '')
+    const params = qs.parse(q)
     if (params.d) {
-      let ast = pathast.parse(params.d)
+      const ast = parse(params.d)
       props.updateAst(ast)
     }
   }
 
   componentDidMount () {
-    let props = this.props
     this.updateState()
     //window.addEventListener('popstate', this.updateState)
   }

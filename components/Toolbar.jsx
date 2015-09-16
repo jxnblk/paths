@@ -29,7 +29,7 @@ class Toolbar extends React.Component {
     }
 
     function updateZoom (val) {
-      props.updateState('zoom', val)
+      props.updateState({ zoom: val })
     }
 
     let svg = makeSvg(props.ast)
@@ -52,21 +52,21 @@ class Toolbar extends React.Component {
             <Button
               active={props.grid}
               onClick={toggleGrid}>
-              Grid {props.grid ? 'On' : 'Off'}
+              Grid {props.grid && '•'}
             </Button>
           </Table.Cell>
           <Table.Cell>
             <Button
               active={props.snap}
               onClick={toggleSnap}>
-              Snap {props.snap ? 'On' : 'Off'}
+              Snap {props.snap && '•'}
             </Button>
           </Table.Cell>
           <Table.Cell>
             <Button
               active={props.preview}
               onClick={togglePreview}>
-              Preview {props.preview ? 'On' : 'Off'}
+              Preview {props.preview && '•'}
             </Button>
           </Table.Cell>
           <Table.Cell>
@@ -93,26 +93,6 @@ class Toolbar extends React.Component {
             </div>
           </Table.Cell>
           <Table.Cell fill />
-          <Table.Cell>
-            <LinkBtn href='https://github.com/jxnblk/paths'>
-              GitHub
-            </LinkBtn>
-          </Table.Cell>
-          <Table.Cell>
-            <Spacer />
-          </Table.Cell>
-          <Table.Cell>
-            <TweetButton
-              url='http://jxnblk.com/paths'
-              text='Build and edit SVGs in the browser' />
-          </Table.Cell>
-          {/*
-          <Table.Cell>
-            <GithubButton
-              user='jxnblk'
-              repo='paths' />
-          </Table.Cell>
-          */}
         </Table>
       </div>
     )

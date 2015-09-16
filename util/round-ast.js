@@ -1,7 +1,9 @@
 
-import { round } from 'lodash'
+import { stringify } from 'path-ast'
+import { cloneDeep, round } from 'lodash'
 
-export default function(ast, precision) {
+export default function(originalAst, precision) {
+  let ast = cloneDeep(originalAst)
   ast.commands = ast.commands.map(function(com) {
     let params = {}
     Object.keys(com.params).forEach(function(key) {

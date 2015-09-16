@@ -4,17 +4,17 @@ import React from 'react'
 class Grid extends React.Component {
 
   render () {
-    let { grid, preview, width, height, resolution, resolution1, resolution2 } = this.props
+    let { grid, preview, width, height, resolution } = this.props
 
     function getLines (x, y, step) {
       let lines = []
-      for (var i = 0; i < y + 1; i++) {
+      for (var i = 0; i <= y; i++) {
         lines.push([
           'M', 0, i * step,
           'H', width
         ].join(' '))
       }
-      for (var i = 0; i < x + 1; i++) {
+      for (var i = 0; i <= x; i++) {
         lines.push([
           'M', i * step, 0,
           'V', height
@@ -24,10 +24,10 @@ class Grid extends React.Component {
     }
 
     let minor = [
-      getLines(width / resolution2, height / resolution2, resolution2)
+      getLines(width / resolution, height / resolution, resolution)
     ].join(' ')
     let major = [
-      getLines(width / resolution1, height / resolution1, resolution1)
+      getLines(width / 16, height / 16, 16)
     ].join(' ')
 
     let styles = {

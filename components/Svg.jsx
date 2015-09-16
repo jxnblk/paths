@@ -4,7 +4,6 @@ import Grid from './Grid.jsx'
 import Path from './Path.jsx'
 import Guides from './Guides.jsx'
 import Handles from './Handles.jsx'
-import AnchorDetails from './AnchorDetails.jsx'
 
 class Svg extends React.Component {
 
@@ -24,7 +23,8 @@ class Svg extends React.Component {
       },
       svg: {
         display: 'block',
-        margin: 'auto'
+        margin: 'auto',
+        overflow: 'visible'
       }
     }
 
@@ -44,7 +44,6 @@ class Svg extends React.Component {
             <Handles {...props} />
           </g>
         </svg>
-        <AnchorDetails {...props} />
       </div>
     )
   }

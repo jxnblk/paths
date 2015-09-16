@@ -1,5 +1,9 @@
 
 import React from 'react'
+import { TweetButton, GithubButton } from 'blk'
+import Table from './Table.jsx'
+import Spacer from './Spacer'
+import LinkBtn from './LinkBtn.jsx'
 
 class Header extends React.Component {
 
@@ -8,12 +12,16 @@ class Header extends React.Component {
       header: {
         fontSize: 14,
         fontWeight: 'bold',
-        textTransform: 'uppercase',
-        letterSpacing: '.2em',
-        padding: '12px 16px'
+        boxSizing: 'border-box',
+        height: 48,
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingTop: 8,
+        paddingBottom: 8,
       },
       link: {
         textTransform: 'uppercase',
+        letterSpacing: '.2em',
         display: 'inline-block',
         color: 'inherit',
         textDecoration: 'none'
@@ -21,15 +29,40 @@ class Header extends React.Component {
     }
     return (
       <header style={s.header}>
-        <a href='http://jxnblk.com'
-          style={s.link}>
-          Jxnblk
-        </a>
-        {' / '}
-        <a href='/paths'
-          style={s.link}>
-          Paths
-        </a>
+        <Table>
+          <Table.Cell>
+            <a href='http://jxnblk.com'
+              style={s.link}>
+              Jxnblk
+            </a>
+            {' / '}
+            <a href='/paths'
+              style={s.link}>
+              Paths
+            </a>
+          </Table.Cell>
+          <Table.Cell fill />
+          <Table.Cell>
+            <LinkBtn href='https://github.com/jxnblk/paths'>
+              GitHub
+            </LinkBtn>
+          </Table.Cell>
+          <Table.Cell>
+            <Spacer />
+          </Table.Cell>
+          <Table.Cell>
+            <TweetButton
+              url='http://jxnblk.com/paths'
+              text='Build and edit SVGs in the browser' />
+          </Table.Cell>
+          {/*
+          <Table.Cell>
+            <GithubButton
+              user='jxnblk'
+              repo='paths' />
+          </Table.Cell>
+          */}
+        </Table>
       </header>
     )
   }

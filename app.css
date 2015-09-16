@@ -14,14 +14,24 @@ circle:focus {
 input:focus,
 select:focus {
   outline: none;
-  color: #111 !important;
-  background-color: var(--blue) !important;
+  background-color: color(var(--blue) a(.125)) !important;
+}
+
+select {
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 button:disabled,
 select:disabled {
   border-color: transparent !important;
-  opacity: .75 !important;
+  opacity: .5 !important;
 }
 
 button:focus,
@@ -30,15 +40,4 @@ a:focus {
   box-shadow: 0 0 0 2px var(--blue) !important;
 }
 
-.truncate {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.scroll-x {
-  display: block;
-  overflow-x: auto;
-}
 
