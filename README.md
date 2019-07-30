@@ -1,6 +1,6 @@
 # Paths
 
-Edit SVG paths in the browser http://jxnblk.com/paths
+Edit SVG paths in the browser https://jxnblk.github.io/paths
 
 ## About
 
