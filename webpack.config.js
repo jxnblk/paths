@@ -1,5 +1,6 @@
 
 var webpack = require('webpack')
+var path = require('path')
 
 module.exports = {
 
@@ -17,6 +18,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /(\.js$|\.jsx?$)/, exclude: /node_modules/, loaders: ['react-hot', 'babel'] },
+      { test: /\.js$/, include: path.resolve(__dirname, './node_modules/blk/node_modules/jxnblk-avatar/src'), loaders: ['babel'] },
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.css$/, loader: 'style-loader!css-loader!cssnext-loader' }
     ]
